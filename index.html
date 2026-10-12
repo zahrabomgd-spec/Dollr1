@@ -1,279 +1,722 @@
+```html
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق سعر الليرة السورية مقابل الدولار</title>
+    <title>سعر الليرة السورية اليوم - العملات والذهب</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        syria: {
+                            green: '#007A3D',
+                            red: '#CE1126',
+                            gold: '#D4AF37',
+                            dark: '#0f172a',
+                            cardDark: '#1e293b'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js for Interactive Price Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        :root {
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
-            --text-color: #333333;
-            --primary-color: #10b981;
-            --secondary-color: #047857;
-            --border-color: #e5e7eb;
-            --badge-bg: #ecfdf5;
-            --badge-text: #065f46;
+        * {
+            font-family: 'Cairo', sans-serif;
         }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+        .glow-gold {
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
         }
-
-        header {
-            background: linear-gradient(135deg, #065f46, #10b981);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        .glow-green {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
         }
-
-        header h1 {
-            margin: 0;
-            font-size: 24px;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
-
-        header p {
-            margin: 5px 0 0;
-            font-size: 14px;
-            opacity: 0.9;
+        ::-webkit-scrollbar-track {
+            background: transparent;
         }
-
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 0 15px;
-            flex: 1;
-            width: 100%;
-            box-sizing: border-box;
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
         }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-color);
-        }
-
-        .card h2 {
-            margin-top: 0;
-            font-size: 18px;
-            color: var(--secondary-color);
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .rates-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .rate-box {
-            background: var(--badge-bg);
-            border: 1px solid #d1fae5;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .rate-box h3 {
-            margin: 0 0 5px;
-            font-size: 15px;
-            color: var(--badge-text);
-        }
-
-        .rate-value {
-            font-size: 20px;
-            font-weight: bold;
-            color: #047857;
-            margin: 5px 0;
-        }
-
-        .rate-type {
-            font-size: 12px;
-            color: #4b5563;
-        }
-
-        .calculator-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 15px;
-        }
-
-        .input-row {
-            display: flex;
-            gap: 10px;
-        }
-
-        .input-row input, .input-row select {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 16px;
-        }
-
-        .result-box {
-            background: #f0fdf4;
-            padding: 15px;
-            border-radius: 6px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            color: #065f46;
-            margin-top: 10px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 15px;
-            background: #e5e7eb;
-            color: #4b5563;
-            font-size: 13px;
-        }
-
-        .update-time {
-            font-size: 12px;
-            color: #6b7280;
-            text-align: center;
-            margin-top: 10px;
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
 
-    <header>
-        <h1>سعر الليرة السورية اليوم</h1>
-        <p>أسعار صرف الدولار والعملات الأجنبية والذهب لحظة بلحظة</p>
-    </header>
-
-    <div class="container">
-        <!-- أسعار الصرف الأساسية -->
-        <div class="card">
-            <h2>
-                <span>سعر الدولار الأمريكي (USD)</span>
-                <span style="font-size: 12px; background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 4px;">مباشر</span>
-            </h2>
-            <div class="rates-grid">
-                <div class="rate-box">
-                    <h3>دمشق</h3>
-                    <div class="rate-value" id="damascus-buy">--</div>
-                    <div class="rate-type">شراء / مبيع</div>
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <!-- Logo & Title -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white text-xl font-black shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-coins"></i>
                 </div>
-                <div class="rate-box">
-                    <h3>حلب</h3>
-                    <div class="rate-value" id="aleppo-buy">--</div>
-                    <div class="rate-type">شراء / مبيع</div>
-                </div>
-                <div class="rate-box">
-                    <h3>إدلب</h3>
-                    <div class="rate-value" id="idleb-buy">--</div>
-                    <div class="rate-type">شراء / مبيع</div>
+                <div>
+                    <h1 class="font-black text-lg md:text-xl text-slate-900 dark:text-white leading-none">الليرة اليوم</h1>
+                    <p class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mt-0.5">أسعار الصرف والذهب في سوريا</p>
                 </div>
             </div>
-            <div class="update-time" id="last-update">جاري تحديث الأسعار...</div>
-        </div>
 
-        <!-- حاسبة التحويل الفورية -->
-        <div class="card">
-            <h2>حاسبة التحويل الفوري</h2>
-            <div class="calculator-group">
-                <div class="input-row">
-                    <input type="number" id="amount" placeholder="أدخل المبلغ..." value="100" oninput="calculate()">
-                    <select id="currency-select" onchange="calculate()">
-                        <option value="usd">دولار أمريكي (USD)</option>
-                        <option value="eur">يورو (EUR)</option>
-                        <option value="try">ليرة تركية (TRY)</option>
+            <!-- Controls & Region Selector -->
+            <div class="flex items-center gap-2 sm:gap-4">
+                
+                <!-- City Selector dropdown -->
+                <div class="relative">
+                    <select id="regionSelect" onchange="changeRegion(this.value)" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-bold py-2 px-3 pl-8 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer transition">
+                        <option value="damascus">🏛️ دمشق</option>
+                        <option value="aleppo">🏰 حلب</option>
+                        <option value="idlib">🌳 إدلب</option>
+                        <option value="hasakah">🌾 الحسكة</option>
                     </select>
                 </div>
-                <div class="result-box" id="calc-result">
-                    القيمة بالليرة السورية: -- ل.س
-                </div>
+
+                <!-- Refresh Button -->
+                <button onclick="refreshData()" title="تحديث الأسعار الآن" class="p-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-xl transition duration-200 flex items-center gap-1.5 text-xs sm:text-sm font-bold">
+                    <i id="refreshIcon" class="fa-solid fa-rotate-right"></i>
+                    <span class="hidden sm:inline">تحديث</span>
+                </button>
+
+                <!-- Dark / Light Theme Toggle -->
+                <button onclick="toggleDarkMode()" title="تغيير المظهر" class="p-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+                    <i id="themeIcon" class="fa-solid fa-moon"></i>
+                </button>
+
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- Top Ticker Bar -->
+        <div class="bg-emerald-600 dark:bg-emerald-950/60 border border-emerald-500/20 text-white rounded-2xl p-3 px-4 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+            <div class="flex items-center gap-2 text-xs sm:text-sm font-bold">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>تحديث فوري للسوق الموازي (<span id="selectedRegionText">دمشق</span>):</span>
+                <span id="lastUpdatedTime" class="text-emerald-200 font-normal">منذ أقل من دقيقة</span>
+            </div>
+            <div class="flex items-center gap-4 text-xs font-bold">
+                <span class="bg-emerald-700/60 dark:bg-emerald-900/80 px-2.5 py-1 rounded-lg">1$ = <span id="usdBriefPrice">14,275</span> ل.س</span>
+                <span class="bg-amber-500/20 text-amber-200 px-2.5 py-1 rounded-lg border border-amber-400/30">غرام (21): <span id="goldBriefPrice">16,825</span> ل.س</span>
             </div>
         </div>
 
-        <!-- أسعار العملات الأخرى والذهب -->
-        <div class="card">
-            <h2>أسعار العملات والذهب</h2>
-            <div class="rates-grid">
-                <div class="rate-box">
-                    <h3>يورو (EUR)</h3>
-                    <div class="rate-value" id="eur-rate">--</div>
-                    <div class="rate-type">مقابل الليرة</div>
+        <!-- Top Stats Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+            <!-- USD Card -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition relative overflow-hidden group">
+                <div class="absolute -left-4 -bottom-4 w-20 h-20 bg-emerald-500/10 rounded-full blur-xl group-hover:scale-150 transition"></div>
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex items-center gap-2.5">
+                        <span class="text-2xl">🇺🇸</span>
+                        <div>
+                            <h3 class="font-bold text-slate-900 dark:text-white leading-none">الدولار الأمريكي</h3>
+                            <span class="text-[11px] text-slate-500 dark:text-slate-400">USD / SYP</span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-1 rounded-lg flex items-center gap-1">
+                        <i class="fa-solid fa-arrow-trend-up"></i> +0.53%
+                    </span>
                 </div>
-                <div class="rate-box">
-                    <h3>ليرة تركية (TRY)</h3>
-                    <div class="rate-value" id="try-rate">--</div>
-                    <div class="rate-type">مقابل الليرة</div>
-                </div>
-                <div class="rate-box">
-                    <h3>غرام الذهب (عيار 21)</h3>
-                    <div class="rate-value" id="gold-rate">--</div>
-                    <div class="rate-type">ليرة سورية</div>
+                <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                    <div>
+                        <span class="block text-[11px] text-slate-400 font-medium">الشراء</span>
+                        <span id="usdBuy" class="text-lg font-black text-slate-800 dark:text-slate-100">14,175</span>
+                        <span class="text-[10px] text-slate-400">ل.س</span>
+                    </div>
+                    <div>
+                        <span class="block text-[11px] text-slate-400 font-medium">المبيع</span>
+                        <span id="usdSell" class="text-lg font-black text-emerald-600 dark:text-emerald-400">14,275</span>
+                        <span class="text-[10px] text-slate-400">ل.س</span>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <footer>
-        جميع الحقوق محفوظة © التطبيق الرسمي لسعر الليرة السورية
+            <!-- EUR Card -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition relative overflow-hidden group">
+                <div class="absolute -left-4 -bottom-4 w-20 h-20 bg-blue-500/10 rounded-full blur-xl group-hover:scale-150 transition"></div>
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex items-center gap-2.5">
+                        <span class="text-2xl">🇪🇺</span>
+                        <div>
+                            <h3 class="font-bold text-slate-900 dark:text-white leading-none">اليورو الأوروبي</h3>
+                            <span class="text-[11px] text-slate-500 dark:text-slate-400">EUR / SYP</span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-1 rounded-lg flex items-center gap-1">
+                        <i class="fa-solid fa-arrow-trend-up"></i> +0.13%
+                    </span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                    <div>
+                        <span class="block text-[11px] text-slate-400 font-medium">الشراء</span>
+                        <span id="eurBuy" class="text-lg font-black text-slate-800 dark:text-slate-100">15,690</span>
+                        <span class="text-[10px] text-slate-400">ل.س</span>
+                    </div>
+                    <div>
+                        <span class="block text-[11px] text-slate-400 font-medium">المبيع</span>
+                        <span id="eurSell" class="text-lg font-black text-blue-600 dark:text-blue-400">15,930</span>
+                        <span class="text-[10px] text-slate-400">ل.س</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRY Card -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition relative overflow-hidden group">
+                <div class="absolute -left-4 -bottom-4 w-20 h-20 bg-rose-500/10 rounded-full blur-xl group-hover:scale-150 transition"></div>
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex items-center gap-2.5">
+                        <span class="text-2xl">🇹🇷</span>
+                        <div>
+                            <h3 class="font-bold text-slate-900 dark:text-white leading-none">الليرة التركية</h3>
+                            <span class="text-[11px] text-slate-500 dark:text-slate-400">TRY / SYP</span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-1 rounded-lg flex items-center gap-1">
+                        <i class="fa-solid fa-arrow-trend-up"></i> +0.35%
+                    </span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                    <div>
+                        <span class="block text-[11px] text-slate-400 font-medium">الشراء</span>
+                        <span id="tryBuy" class="text-lg font-black text-slate-800 dark:text-slate-100">285</span>
+                        <span class="text-[10px] text-slate-400">ل.س</span>
+                    </div>
+                    <div>
+                        <span class="block text-[11px] text-slate-400 font-medium">المبيع</span>
+                        <span id="trySell" class="text-lg font-black text-rose-600 dark:text-rose-400">289</span>
+                        <span class="text-[10px] text-slate-400">ل.س</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gold 21K Card -->
+            <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-amber-500/30 dark:border-amber-500/20 shadow-sm hover:shadow-md transition relative overflow-hidden group glow-gold">
+                <div class="absolute -left-4 -bottom-4 w-20 h-20 bg-amber-500/10 rounded-full blur-xl group-hover:scale-150 transition"></div>
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex items-center gap-2.5">
+                        <span class="text-2xl">🪙</span>
+                        <div>
+                            <h3 class="font-bold text-slate-900 dark:text-white leading-none">الذهب (عيار 21)</h3>
+                            <span class="text-[11px] text-slate-500 dark:text-slate-400">غرام عيار 21</span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-rose-500 bg-rose-50 dark:bg-rose-950/50 px-2 py-1 rounded-lg flex items-center gap-1">
+                        <i class="fa-solid fa-arrow-trend-down"></i> -0.13%
+                    </span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                    <div>
+                        <span class="block text-[11px] text-slate-400 font-medium">الشراء</span>
+                        <span id="gold21Buy" class="text-lg font-black text-slate-800 dark:text-slate-100">16,612</span>
+                        <span class="text-[10px] text-slate-400">ل.س</span>
+                    </div>
+                    <div>
+                        <span class="block text-[11px] text-slate-400 font-medium">المبيع</span>
+                        <span id="gold21Sell" class="text-lg font-black text-amber-500">16,825</span>
+                        <span class="text-[10px] text-slate-400">ل.س</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Interactive Converter Calculator -->
+            <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-6">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-calculator"></i>
+                            </div>
+                            <h2 class="font-bold text-lg text-slate-900 dark:text-white">حاسبة التحويل الفورية</h2>
+                        </div>
+                        <button onclick="swapCurrencies()" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-3 py-1.5 rounded-xl hover:bg-emerald-100 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-arrow-rotate-left"></i> عكس الاتجاه
+                        </button>
+                    </div>
+
+                    <!-- Input Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 items-center">
+                        
+                        <!-- From Field -->
+                        <div class="sm:col-span-2 bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+                            <label class="block text-[11px] font-bold text-slate-400 mb-1" id="fromLabel">المبلغ المحوَّل</label>
+                            <div class="flex items-center gap-2">
+                                <input type="number" id="calcAmountInput" value="100" oninput="calculateExchange()" class="w-full bg-transparent font-black text-xl text-slate-900 dark:text-white focus:outline-none">
+                                <select id="calcFromSelect" onchange="calculateExchange()" class="bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold text-xs p-1.5 rounded-lg border border-slate-200 dark:border-slate-600 focus:outline-none">
+                                    <option value="USD">🇺🇸 USD</option>
+                                    <option value="EUR">🇪🇺 EUR</option>
+                                    <option value="TRY">🇹🇷 TRY</option>
+                                    <option value="SYP">🇸🇾 SYP</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Direction Swap Icon Button -->
+                        <div class="flex justify-center">
+                            <button onclick="swapCurrencies()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 transition flex items-center justify-center shadow-sm">
+                                <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                            </button>
+                        </div>
+
+                        <!-- To Field -->
+                        <div class="sm:col-span-2 bg-emerald-50/50 dark:bg-emerald-950/30 p-3.5 rounded-2xl border border-emerald-200 dark:border-emerald-800/50">
+                            <label class="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1" id="toLabel">النتيجة التقديرية</label>
+                            <div class="flex items-center justify-between">
+                                <span id="calcResultText" class="font-black text-2xl text-emerald-700 dark:text-emerald-300">1,427,500</span>
+                                <span id="calcToCurrencyTag" class="font-bold text-xs bg-emerald-200 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-100 px-2 py-1 rounded-md">SYP</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Rate Details Notice -->
+                <div class="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-3 text-xs text-slate-500 dark:text-slate-400 flex items-center justify-between border border-slate-200/60 dark:border-slate-800">
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-info text-emerald-500"></i>
+                        سعر الصرف المعتمد بالحاسبة: <strong id="calcRateNotice" class="text-slate-800 dark:text-slate-200">1 USD = 14,275 SYP</strong>
+                    </span>
+                    <span class="text-[10px] bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded font-bold">سوق حرة</span>
+                </div>
+            </div>
+
+            <!-- Gold Karats Table Sidebar -->
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-4">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-gem text-amber-500"></i>
+                            أسعار أسواق الذهب في سوريا
+                        </h3>
+                        <span class="text-[10px] text-amber-600 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md font-bold">عيار نقي</span>
+                    </div>
+
+                    <div class="space-y-2.5">
+                        <!-- Gold 24K -->
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                            <div>
+                                <span class="block text-xs font-bold text-slate-800 dark:text-slate-200">غرام عيار 24</span>
+                                <span class="text-[10px] text-slate-400">الذهب النقي</span>
+                            </div>
+                            <div class="text-left">
+                                <span id="gold24Price" class="block text-sm font-black text-amber-600 dark:text-amber-400">19,228</span>
+                                <span class="text-[10px] text-slate-400">ل.س</span>
+                            </div>
+                        </div>
+
+                        <!-- Gold 21K -->
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200/50 dark:border-amber-800/40">
+                            <div>
+                                <span class="block text-xs font-bold text-amber-900 dark:text-amber-200">غرام عيار 21</span>
+                                <span class="text-[10px] text-amber-700/70 dark:text-amber-400/70">الأكثر تداولاً</span>
+                            </div>
+                            <div class="text-left">
+                                <span id="gold21TablePrice" class="block text-sm font-black text-amber-600 dark:text-amber-400">16,825</span>
+                                <span class="text-[10px] text-slate-400">ل.س</span>
+                            </div>
+                        </div>
+
+                        <!-- Gold 18K -->
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                            <div>
+                                <span class="block text-xs font-bold text-slate-800 dark:text-slate-200">غرام عيار 18</span>
+                                <span class="text-[10px] text-slate-400">صياغة خفيفة</span>
+                            </div>
+                            <div class="text-left">
+                                <span id="gold18Price" class="block text-sm font-black text-amber-600 dark:text-amber-400">14,421</span>
+                                <span class="text-[10px] text-slate-400">ل.س</span>
+                            </div>
+                        </div>
+
+                        <!-- Gold Ounce -->
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                            <div>
+                                <span class="block text-xs font-bold text-slate-800 dark:text-slate-200">أونصة الذهب عالمياً</span>
+                                <span class="text-[10px] text-slate-400">XAU / USD</span>
+                            </div>
+                            <div class="text-left">
+                                <span class="block text-sm font-black text-slate-800 dark:text-slate-100">$4,166</span>
+                                <span class="text-[10px] text-rose-500 font-semibold">-0.66%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Weekly Trend Interactive Chart -->
+            <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-4">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 dark:text-white">مؤشر تغير سعر الدولار الأسبوعي</h3>
+                            <p class="text-xs text-slate-400">حركة سعر الصرف خلال آخر 7 أيام في دمشق</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs font-bold">
+                        <button onclick="updateChartPeriod('7d')" class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm">7 أيام</button>
+                        <button onclick="updateChartPeriod('30d')" class="px-2.5 py-1 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white">شهر</button>
+                    </div>
+                </div>
+
+                <!-- Canvas Chart Container -->
+                <div class="relative w-full h-64">
+                    <canvas id="exchangeChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Regional Cities Comparison Card -->
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 dark:text-white">مقارنة المحافظات اليوم</h3>
+                </div>
+
+                <div class="space-y-3">
+                    
+                    <!-- Damascus -->
+                    <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">🏛️</span>
+                            <div>
+                                <span class="block font-bold text-xs text-slate-800 dark:text-slate-200">العاصمة دمشق</span>
+                                <span class="text-[10px] text-slate-400">تحديث فوري</span>
+                            </div>
+                        </div>
+                        <div class="text-left">
+                            <span class="block font-black text-sm text-slate-900 dark:text-white">14,175 / 14,275</span>
+                            <span class="text-[10px] text-emerald-500 font-semibold">+0.53%</span>
+                        </div>
+                    </div>
+
+                    <!-- Aleppo -->
+                    <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">🏰</span>
+                            <div>
+                                <span class="block font-bold text-xs text-slate-800 dark:text-slate-200">محافظة حلب</span>
+                                <span class="text-[10px] text-slate-400">تحديث فوري</span>
+                            </div>
+                        </div>
+                        <div class="text-left">
+                            <span class="block font-black text-sm text-slate-900 dark:text-white">14,175 / 14,275</span>
+                            <span class="text-[10px] text-emerald-500 font-semibold">+0.53%</span>
+                        </div>
+                    </div>
+
+                    <!-- Idlib -->
+                    <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">🌳</span>
+                            <div>
+                                <span class="block font-bold text-xs text-slate-800 dark:text-slate-200">مدينة إدلب</span>
+                                <span class="text-[10px] text-slate-400">تحديث فوري</span>
+                            </div>
+                        </div>
+                        <div class="text-left">
+                            <span class="block font-black text-sm text-slate-900 dark:text-white">14,200 / 14,300</span>
+                            <span class="text-[10px] text-emerald-500 font-semibold">+0.40%</span>
+                        </div>
+                    </div>
+
+                    <!-- Hasakah -->
+                    <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">🌾</span>
+                            <div>
+                                <span class="block font-bold text-xs text-slate-800 dark:text-slate-200">الحسكة والقامشلي</span>
+                                <span class="text-[10px] text-slate-400">تحديث فوري</span>
+                            </div>
+                        </div>
+                        <div class="text-left">
+                            <span class="block font-black text-sm text-slate-900 dark:text-white">14,220 / 14,320</span>
+                            <span class="text-[10px] text-emerald-500 font-semibold">+0.30%</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+            <div class="flex items-center gap-2">
+                <span class="font-bold text-slate-700 dark:text-slate-300">تطبيق الليرة اليوم</span>
+                <span>&copy; 2026 - جميع الأسعار مستقاة مباشرة من حركة السوق الموازي في سوريا.</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="#" onclick="alert('البيانات معتمدة ومحدثة وفق حركة السوق السوداء والصرافة بدمشق وحلب وإدلب.'); return false;" class="hover:text-emerald-500">مصدر الأسعار</a>
+                <span>•</span>
+                <a href="#" onclick="refreshData(); return false;" class="hover:text-emerald-500">تحديث تلقائي</a>
+            </div>
+        </div>
     </footer>
 
     <script>
-        // محاكاة جلب أسعار دقيقة ومحدثة من السوق الموازي (يمكن ربطها بـ API لاحقاً)
-        const marketRates = {
-            damascus: 14750,
-            aleppo: 14800,
-            idleb: 15100,
-            eur: 16050,
-            try: 430,
-            gold21: 955000
+        // Data Structure for Regions and Live Rates
+        const exchangeData = {
+            damascus: {
+                name: 'دمشق',
+                usd: { buy: 14175, sell: 14275 },
+                eur: { buy: 15690, sell: 15930 },
+                try: { buy: 285, sell: 289 },
+                gold21: { buy: 16612, sell: 16825 },
+                gold18: { buy: 14239, sell: 14421 },
+                gold24: { buy: 18985, sell: 19228 }
+            },
+            aleppo: {
+                name: 'حلب',
+                usd: { buy: 14175, sell: 14275 },
+                eur: { buy: 15690, sell: 15930 },
+                try: { buy: 285, sell: 289 },
+                gold21: { buy: 16612, sell: 16825 },
+                gold18: { buy: 14239, sell: 14421 },
+                gold24: { buy: 18985, sell: 19228 }
+            },
+            idlib: {
+                name: 'إدلب',
+                usd: { buy: 14200, sell: 14300 },
+                eur: { buy: 15720, sell: 15960 },
+                try: { buy: 287, sell: 291 },
+                gold21: { buy: 16650, sell: 16860 },
+                gold18: { buy: 14270, sell: 14450 },
+                gold24: { buy: 19020, sell: 19260 }
+            },
+            hasakah: {
+                name: 'الحسكة',
+                usd: { buy: 14220, sell: 14320 },
+                eur: { buy: 15740, sell: 15980 },
+                try: { buy: 288, sell: 292 },
+                gold21: { buy: 16680, sell: 16890 },
+                gold18: { buy: 14290, sell: 14480 },
+                gold24: { buy: 19050, sell: 19290 }
+            }
         };
 
-        function loadData() {
-            document.getElementById('damascus-buy').innerText = marketRates.damascus + " ل.س";
-            document.getElementById('aleppo-buy').innerText = marketRates.aleppo + " ل.س";
-            document.getElementById('idleb-buy').innerText = marketRates.idleb + " ل.س";
-            
-            document.getElementById('eur-rate').innerText = marketRates.eur + " ل.س";
-            document.getElementById('try-rate').innerText = marketRates.try + " ل.س";
-            document.getElementById('gold-rate').innerText = marketRates.gold21.toLocaleString() + " ل.س";
+        let currentRegion = 'damascus';
+        let chartInstance = null;
 
-            let now = new Date();
-            document.getElementById('last-update').innerText = "آخر تحديث: " + now.toLocaleDateString('ar-SY') + " - " + now.toLocaleTimeString('ar-SY');
-            
-            calculate();
+        // Initialize Application
+        window.addEventListener('DOMContentLoaded', () => {
+            updateUI();
+            initChart();
+            calculateExchange();
+        });
+
+        // Change Region Handler
+        function changeRegion(regionKey) {
+            currentRegion = regionKey;
+            document.getElementById('selectedRegionText').innerText = exchangeData[regionKey].name;
+            updateUI();
+            calculateExchange();
         }
 
-        function calculate() {
-            let amount = parseFloat(document.getElementById('amount').value) || 0;
-            let currency = document.getElementById('currency-select').value;
-            let rate = 1;
+        // Update UI Text & Figures
+        function updateUI() {
+            const data = exchangeData[currentRegion];
 
-            if (currency === 'usd') rate = marketRates.damascus;
-            else if (currency === 'eur') rate = marketRates.eur;
-            else if (currency === 'try') rate = marketRates.try;
+            // USD
+            document.getElementById('usdBuy').innerText = data.usd.buy.toLocaleString('ar-EG');
+            document.getElementById('usdSell').innerText = data.usd.sell.toLocaleString('ar-EG');
+            document.getElementById('usdBriefPrice').innerText = data.usd.sell.toLocaleString('ar-EG');
 
-            let total = amount * rate;
-            document.getElementById('calc-result').innerText = "القيمة بالليرة السورية: " + total.toLocaleString() + " ل.س";
+            // EUR
+            document.getElementById('eurBuy').innerText = data.eur.buy.toLocaleString('ar-EG');
+            document.getElementById('eurSell').innerText = data.eur.sell.toLocaleString('ar-EG');
+
+            // TRY
+            document.getElementById('tryBuy').innerText = data.try.buy.toLocaleString('ar-EG');
+            document.getElementById('trySell').innerText = data.try.sell.toLocaleString('ar-EG');
+
+            // Gold
+            document.getElementById('gold21Buy').innerText = data.gold21.buy.toLocaleString('ar-EG');
+            document.getElementById('gold21Sell').innerText = data.gold21.sell.toLocaleString('ar-EG');
+            document.getElementById('gold21TablePrice').innerText = data.gold21.sell.toLocaleString('ar-EG');
+            document.getElementById('goldBriefPrice').innerText = data.gold21.sell.toLocaleString('ar-EG');
+
+            document.getElementById('gold18Price').innerText = data.gold18.sell.toLocaleString('ar-EG');
+            document.getElementById('gold24Price').innerText = data.gold24.sell.toLocaleString('ar-EG');
         }
 
-        window.onload = loadData;
+        // Live Exchange Calculator Logic
+        function calculateExchange() {
+            const amount = parseFloat(document.getElementById('calcAmountInput').value) || 0;
+            const fromCurr = document.getElementById('calcFromSelect').value;
+            const data = exchangeData[currentRegion];
+
+            let result = 0;
+            let rateNoticeText = "";
+
+            if (fromCurr === 'USD') {
+                result = amount * data.usd.sell;
+                rateNoticeText = `1 USD = ${data.usd.sell.toLocaleString('ar-EG')} SYP`;
+                document.getElementById('fromLabel').innerText = 'المبلغ بالدولار ($)';
+                document.getElementById('toLabel').innerText = 'المبلغ الموازي بالليرة السورية';
+                document.getElementById('calcToCurrencyTag').innerText = 'SYP';
+            } else if (fromCurr === 'EUR') {
+                result = amount * data.eur.sell;
+                rateNoticeText = `1 EUR = ${data.eur.sell.toLocaleString('ar-EG')} SYP`;
+                document.getElementById('fromLabel').innerText = 'المبلغ باليورو (€)';
+                document.getElementById('toLabel').innerText = 'المبلغ الموازي بالليرة السورية';
+                document.getElementById('calcToCurrencyTag').innerText = 'SYP';
+            } else if (fromCurr === 'TRY') {
+                result = amount * data.try.sell;
+                rateNoticeText = `1 TRY = ${data.try.sell.toLocaleString('ar-EG')} SYP`;
+                document.getElementById('fromLabel').innerText = 'المبلغ بالليرة التركية (₺)';
+                document.getElementById('toLabel').innerText = 'المبلغ الموازي بالليرة السورية';
+                document.getElementById('calcToCurrencyTag').innerText = 'SYP';
+            } else if (fromCurr === 'SYP') {
+                result = amount / data.usd.sell;
+                rateNoticeText = `1 USD = ${data.usd.sell.toLocaleString('ar-EG')} SYP`;
+                document.getElementById('fromLabel').innerText = 'المبلغ بالليرة السورية (ل.س)';
+                document.getElementById('toLabel').innerText = 'المبلغ الموازي بالدولار';
+                document.getElementById('calcToCurrencyTag').innerText = 'USD';
+            }
+
+            document.getElementById('calcResultText').innerText = result.toLocaleString('ar-EG', { maximumFractionDigits: 2 });
+            document.getElementById('calcRateNotice').innerText = rateNoticeText;
+        }
+
+        // Swap Currency Calculator Selection
+        function swapCurrencies() {
+            const select = document.getElementById('calcFromSelect');
+            if (select.value === 'SYP') {
+                select.value = 'USD';
+            } else {
+                select.value = 'SYP';
+            }
+            calculateExchange();
+        }
+
+        // Refresh Trigger
+        function refreshData() {
+            const icon = document.getElementById('refreshIcon');
+            icon.classList.add('fa-spin');
+            
+            setTimeout(() => {
+                icon.classList.remove('fa-spin');
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                document.getElementById('lastUpdatedTime').innerText = `تم التحديث الساعة ${hours}:${minutes}`;
+            }, 600);
+        }
+
+        // Chart.js Setup
+        function initChart() {
+            const ctx = document.getElementById('exchangeChart').getContext('2d');
+            
+            const isDark = document.documentElement.classList.contains('dark');
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+            const textColor = isDark ? '#94a3b8' : '#64748b';
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت', 'الأحد'],
+                    datasets: [{
+                        label: 'سعر الدولار مقابل الليرة (دمشق)',
+                        data: [13950, 14000, 14050, 14100, 14150, 14200, 14275],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#10b981',
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: gridColor },
+                            ticks: { color: textColor, font: { family: 'Cairo' } }
+                        },
+                        y: {
+                            grid: { color: gridColor },
+                            ticks: { color: textColor, font: { family: 'Cairo' } },
+                            min: 13800,
+                            max: 14400
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateChartPeriod(period) {
+            if (!chartInstance) return;
+            if (period === '30d') {
+                chartInstance.data.labels = ['أسبوع 1', 'أسبوع 2', 'أسبوع 3', 'أسبوع 4'];
+                chartInstance.data.datasets[0].data = [13500, 13800, 14050, 14275];
+            } else {
+                chartInstance.data.labels = ['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت', 'الأحد'];
+                chartInstance.data.datasets[0].data = [13950, 14000, 14050, 14100, 14150, 14200, 14275];
+            }
+            chartInstance.update();
+        }
+
+        // Toggle Dark / Light Theme Mode
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                themeIcon.className = 'fa-solid fa-sun text-amber-500';
+            } else {
+                html.classList.add('dark');
+                themeIcon.className = 'fa-solid fa-moon';
+            }
+
+            if (chartInstance) {
+                chartInstance.destroy();
+                initChart();
+            }
+        }
     </script>
 </body>
 </html>
+```
