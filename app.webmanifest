@@ -9,12 +9,12 @@
     {
       "src": "https://zahrabomgd-spec.github.io/Dollr1/icon.jpg",
       "sizes": "192x192",
-      "type": "image/jpeg"
+      "type": "image/png"
     },
     {
       "src": "https://zahrabomgd-spec.github.io/Dollr1/icon.jpg",
       "sizes": "512x512",
-      "type": "image/jpeg"
+      "type": "image/png"
     }
   ]
 }
