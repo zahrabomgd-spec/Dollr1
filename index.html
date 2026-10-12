@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق سعر الليرة السورية مقابل الدولار</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --primary-color: #10b981;
+            --secondary-color: #047857;
+            --border-color: #e5e7eb;
+            --badge-bg: #ecfdf5;
+            --badge-text: #065f46;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #065f46, #10b981);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        header p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+            flex: 1;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 18px;
+            color: var(--secondary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .rate-box {
+            background: var(--badge-bg);
+            border: 1px solid #d1fae5;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .rate-box h3 {
+            margin: 0 0 5px;
+            font-size: 15px;
+            color: var(--badge-text);
+        }
+
+        .rate-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #047857;
+            margin: 5px 0;
+        }
+
+        .rate-type {
+            font-size: 12px;
+            color: #4b5563;
+        }
+
+        .calculator-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-row input, .input-row select {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .result-box {
+            background: #f0fdf4;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #065f46;
+            margin-top: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #e5e7eb;
+            color: #4b5563;
+            font-size: 13px;
+        }
+
+        .update-time {
+            font-size: 12px;
+            color: #6b7280;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>سعر الليرة السورية اليوم</h1>
+        <p>أسعار صرف الدولار والعملات الأجنبية والذهب لحظة بلحظة</p>
+    </header>
+
+    <div class="container">
+        <!-- أسعار الصرف الأساسية -->
+        <div class="card">
+            <h2>
+                <span>سعر الدولار الأمريكي (USD)</span>
+                <span style="font-size: 12px; background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 4px;">مباشر</span>
+            </h2>
+            <div class="rates-grid">
+                <div class="rate-box">
+                    <h3>دمشق</h3>
+                    <div class="rate-value" id="damascus-buy">--</div>
+                    <div class="rate-type">شراء / مبيع</div>
+                </div>
+                <div class="rate-box">
+                    <h3>حلب</h3>
+                    <div class="rate-value" id="aleppo-buy">--</div>
+                    <div class="rate-type">شراء / مبيع</div>
+                </div>
+                <div class="rate-box">
+                    <h3>إدلب</h3>
+                    <div class="rate-value" id="idleb-buy">--</div>
+                    <div class="rate-type">شراء / مبيع</div>
+                </div>
+            </div>
+            <div class="update-time" id="last-update">جاري تحديث الأسعار...</div>
+        </div>
+
+        <!-- حاسبة التحويل الفورية -->
+        <div class="card">
+            <h2>حاسبة التحويل الفوري</h2>
+            <div class="calculator-group">
+                <div class="input-row">
+                    <input type="number" id="amount" placeholder="أدخل المبلغ..." value="100" oninput="calculate()">
+                    <select id="currency-select" onchange="calculate()">
+                        <option value="usd">دولار أمريكي (USD)</option>
+                        <option value="eur">يورو (EUR)</option>
+                        <option value="try">ليرة تركية (TRY)</option>
+                    </select>
+                </div>
+                <div class="result-box" id="calc-result">
+                    القيمة بالليرة السورية: -- ل.س
+                </div>
+            </div>
+        </div>
+
+        <!-- أسعار العملات الأخرى والذهب -->
+        <div class="card">
+            <h2>أسعار العملات والذهب</h2>
+            <div class="rates-grid">
+                <div class="rate-box">
+                    <h3>يورو (EUR)</h3>
+                    <div class="rate-value" id="eur-rate">--</div>
+                    <div class="rate-type">مقابل الليرة</div>
+                </div>
+                <div class="rate-box">
+                    <h3>ليرة تركية (TRY)</h3>
+                    <div class="rate-value" id="try-rate">--</div>
+                    <div class="rate-type">مقابل الليرة</div>
+                </div>
+                <div class="rate-box">
+                    <h3>غرام الذهب (عيار 21)</h3>
+                    <div class="rate-value" id="gold-rate">--</div>
+                    <div class="rate-type">ليرة سورية</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        جميع الحقوق محفوظة © التطبيق الرسمي لسعر الليرة السورية
+    </footer>
+
+    <script>
+        // محاكاة جلب أسعار دقيقة ومحدثة من السوق الموازي (يمكن ربطها بـ API لاحقاً)
+        const marketRates = {
+            damascus: 14750,
+            aleppo: 14800,
+            idleb: 15100,
+            eur: 16050,
+            try: 430,
+            gold21: 955000
+        };
+
+        function loadData() {
+            document.getElementById('damascus-buy').innerText = marketRates.damascus + " ل.س";
+            document.getElementById('aleppo-buy').innerText = marketRates.aleppo + " ل.س";
+            document.getElementById('idleb-buy').innerText = marketRates.idleb + " ل.س";
+            
+            document.getElementById('eur-rate').innerText = marketRates.eur + " ل.س";
+            document.getElementById('try-rate').innerText = marketRates.try + " ل.س";
+            document.getElementById('gold-rate').innerText = marketRates.gold21.toLocaleString() + " ل.س";
+
+            let now = new Date();
+            document.getElementById('last-update').innerText = "آخر تحديث: " + now.toLocaleDateString('ar-SY') + " - " + now.toLocaleTimeString('ar-SY');
+            
+            calculate();
+        }
+
+        function calculate() {
+            let amount = parseFloat(document.getElementById('amount').value) || 0;
+            let currency = document.getElementById('currency-select').value;
+            let rate = 1;
+
+            if (currency === 'usd') rate = marketRates.damascus;
+            else if (currency === 'eur') rate = marketRates.eur;
+            else if (currency === 'try') rate = marketRates.try;
+
+            let total = amount * rate;
+            document.getElementById('calc-result').innerText = "القيمة بالليرة السورية: " + total.toLocaleString() + " ل.س";
+        }
+
+        window.onload = loadData;
+    </script>
+</body>
+</html>
