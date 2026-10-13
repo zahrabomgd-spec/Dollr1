@@ -73,7 +73,7 @@
         <div class="flex items-center gap-2 max-w-7xl mx-auto w-full justify-between">
             <span class="flex items-center gap-2">
                 <i class="fa-solid fa-circle-info animate-bounce text-slate-900 text-base"></i>
-                <span>اضغط على زر 🔔 التنبيهات بالأعلى لتصلك الأسعار فور تغييرها!</span>
+                <span>اضغط على زر 🔔 التنبيهات لتفعيل أو إيقاف التنبيهات الفورية!</span>
             </span>
             <button onclick="dismissBanner()" class="text-slate-900 hover:text-white transition px-2 py-0.5 rounded bg-amber-600/30 text-xs">إغلاق</button>
         </div>
@@ -83,7 +83,7 @@
     <header class="sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 transition-colors">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-2">
             
-            <!-- Logo & Title Fix -->
+            <!-- Logo & Title -->
             <div class="flex items-center gap-2 sm:gap-3 shrink-0">
                 <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white text-lg sm:text-xl font-black shadow-lg shadow-emerald-500/20 shrink-0">
                     <i class="fa-solid fa-coins"></i>
@@ -105,8 +105,8 @@
                     </select>
                 </div>
 
-                <!-- Notification Bell Button -->
-                <button id="notifyBtn" onclick="toggleNotifications()" title="تفعيل التنبيهات عند تغير السعر" class="p-2 sm:p-2.5 bg-amber-500/20 text-amber-600 dark:text-amber-400 rounded-xl transition duration-200 flex items-center gap-1 text-xs sm:text-sm font-bold animate-pulse">
+                <!-- Notification Toggle Button -->
+                <button id="notifyBtn" onclick="toggleNotifications()" title="تشغيل / إيقاف التنبيهات" class="p-2 sm:p-2.5 bg-amber-500/20 text-amber-600 dark:text-amber-400 rounded-xl transition duration-200 flex items-center gap-1 text-xs sm:text-sm font-bold animate-pulse">
                     <i id="notifyIcon" class="fa-solid fa-bell text-sm sm:text-base"></i>
                     <span class="hidden md:inline" id="notifyText">التنبيهات</span>
                 </button>
@@ -137,6 +137,7 @@
             </div>
         </div>
 
+        <!-- Currencies Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- USD Card -->
             <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition relative overflow-hidden group">
@@ -240,6 +241,16 @@
                         <span class="text-[10px] text-slate-400">ل.س</span>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- 📢 المساحة الإعلانية -->
+        <div class="w-full bg-slate-100 dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-800 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden my-6">
+            <span class="absolute top-2 left-3 text-[10px] font-bold text-slate-400 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">إعلان</span>
+            <div class="flex flex-col items-center justify-center space-y-2">
+                <i class="fa-solid fa-rectangle-ad text-3xl text-emerald-500/60"></i>
+                <h4 class="font-bold text-sm sm:text-base text-slate-700 dark:text-slate-300">مساحة إعلانية محجوزة</h4>
+                <p class="text-xs text-slate-400 max-w-md">يمكنك وضع شريط إعلاني أو كود AdSense أو بنر ترويجي هنا لمشروعك أو لعملائك.</p>
             </div>
         </div>
 
@@ -442,6 +453,7 @@
         let currentRegion = 'damascus';
         let chartInstance = null;
         let lastUSDPrice = 0;
+        let notificationsEnabled = false;
 
         window.addEventListener('DOMContentLoaded', () => {
             fetchLiveRates();
@@ -474,7 +486,7 @@
                         newSell = 14050;
                     }
 
-                    if (lastUSDPrice !== 0 && lastUSDPrice !== newSell) {
+                    if (lastUSDPrice !== 0 && lastUSDPrice !== newSell && notificationsEnabled) {
                         sendPriceNotification(newSell);
                     }
                     lastUSDPrice = newSell;
@@ -495,44 +507,75 @@
             }
         }
 
+        // دالة التبديل الذكية (تشغيل / إيقاف)
         function toggleNotifications() {
             if (!("Notification" in window)) {
                 alert("المتصفح لا يدعم التنبيهات المباشرة");
                 return;
             }
 
+            // إذا كانت مفعلة مسبقاً، نقوم بإيقافها
+            if (notificationsEnabled) {
+                notificationsEnabled = false;
+                updateNotifyButtonUI();
+                alert("تم إيقاف التنبيهات بنجاح.");
+                return;
+            }
+
+            // إذا لم تكن مفعلة، نطلب الإذن بتفعيلها
             if (Notification.permission === "granted") {
-                alert("التنبيهات مفعلة لديك مسبقاً! ستصلك التنبيهات فور تغيير الأسعار.");
+                notificationsEnabled = true;
+                updateNotifyButtonUI();
                 dismissBanner();
-            } else if (Notification.permission !== "denied") {
+                alert("تم تفعيل التنبيهات بنجاح! ستصلك إشعارات فور تغير السعر.");
+            } else {
                 Notification.requestPermission().then(permission => {
                     if (permission === "granted") {
-                        checkNotificationStatus();
+                        notificationsEnabled = true;
+                        updateNotifyButtonUI();
                         dismissBanner();
                         new Notification("تطبيق الليرة اليوم", {
-                            body: "تم تفعيل التنبيهات بنجاح! سنقوم بإعلامك فور تغيير الأسعار.",
+                            body: "تم تفعيل التنبيهات بنجاح!",
                             icon: "https://zahrabomgd-spec.github.io/Dollr1/icon.jpg"
                         });
+                    } else {
+                        alert("تم رفض إذن التنبيهات من المتصفح.");
                     }
                 });
-            } else {
-                alert("يرجى تفعيل إذن التنبيهات من إعدادات المتصفح لديك.");
             }
         }
 
         function checkNotificationStatus() {
+            if ("Notification" in window && Notification.permission === "granted") {
+                notificationsEnabled = true;
+                updateNotifyButtonUI();
+                dismissBanner();
+            } else {
+                notificationsEnabled = false;
+                updateNotifyButtonUI();
+            }
+        }
+
+        // تحديث مظهر زر التنبيهات بناءً على حالته
+        function updateNotifyButtonUI() {
             const btn = document.getElementById('notifyBtn');
             const text = document.getElementById('notifyText');
-            if ("Notification" in window && Notification.permission === "granted") {
+
+            if (notificationsEnabled) {
                 btn.classList.remove('bg-amber-500/20', 'text-amber-600', 'dark:text-amber-400', 'animate-pulse');
                 btn.classList.add('bg-emerald-500/20', 'text-emerald-600', 'dark:text-emerald-400');
-                if (text) text.innerText = "مفعلة";
-                dismissBanner();
+                if (text) text.innerText = "التنبيهات مفعلة";
+                btn.title = "التنبيهات مفعلة (اضغط للإيقاف)";
+            } else {
+                btn.classList.remove('bg-emerald-500/20', 'text-emerald-600', 'dark:text-emerald-400');
+                btn.classList.add('bg-amber-500/20', 'text-amber-600', 'dark:text-amber-400', 'animate-pulse');
+                if (text) text.innerText = "التنبيهات";
+                btn.title = "اضغط لتفعيل التنبيهات";
             }
         }
 
         function sendPriceNotification(newPrice) {
-            if ("Notification" in window && Notification.permission === "granted") {
+            if (notificationsEnabled && "Notification" in window && Notification.permission === "granted") {
                 new Notification("تحديث سعر الدولار 🚨", {
                     body: `تغير سعر الصرف الآن إلى: 1$ = ${newPrice.toLocaleString('ar-EG')} ل.س`,
                     icon: "https://zahrabomgd-spec.github.io/Dollr1/icon.jpg"
