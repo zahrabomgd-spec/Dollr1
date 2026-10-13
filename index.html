@@ -244,13 +244,24 @@
             </div>
         </div>
 
-        <!-- 📢 المساحة الإعلانية -->
-        <div class="w-full bg-slate-100 dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-800 rounded-2xl p-4 sm:p-6 text-center relative overflow-hidden my-6">
-            <span class="absolute top-2 left-3 text-[10px] font-bold text-slate-400 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">إعلان</span>
-            <div class="flex flex-col items-center justify-center space-y-2">
-                <i class="fa-solid fa-rectangle-ad text-3xl text-emerald-500/60"></i>
-                <h4 class="font-bold text-sm sm:text-base text-slate-700 dark:text-slate-300">مساحة إعلانية محجوزة</h4>
-                <p class="text-xs text-slate-400 max-w-md">يمكنك وضع شريط إعلاني أو كود AdSense أو بنر ترويجي هنا لمشروعك أو لعملائك.</p>
+        <!-- 📢 إعلان غرف نوم المجد الأقوى في سوريا -->
+        <div class="w-full bg-gradient-to-r from-emerald-800 via-teal-800 to-slate-900 text-white rounded-2xl p-5 sm:p-6 shadow-xl border border-emerald-500/40 relative overflow-hidden my-6">
+            <span class="absolute top-2 left-3 text-[10px] font-bold text-amber-300 bg-black/40 px-2.5 py-0.5 rounded-md backdrop-blur-sm">إعلان مميز</span>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between gap-5">
+                <div class="text-right space-y-2">
+                    <h4 class="font-black text-lg sm:text-xl text-amber-400 flex items-center gap-2">
+                        🛏️ غرف نوم المجد - الأقوى والأفخم في سوريا
+                    </h4>
+                    <p class="text-xs sm:text-sm text-slate-200 leading-relaxed max-w-2xl">
+                        أقوى عروض غرف النوم المودرن وتفصيل خاص بحسب الطلب (خشب نخب أول، سحابات وإكسسوارات متينة، مع ضمان الجودة والمتانة التي تدوم طويلاً).
+                    </p>
+                </div>
+                
+                <a href="https://wa.me/9639xxxxxxx" target="_blank" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-6 py-3 rounded-xl transition-all duration-200 text-xs sm:text-sm shrink-0 shadow-lg flex items-center gap-2 border border-amber-300 transform hover:scale-105">
+                    <i class="fa-brands fa-whatsapp text-lg text-emerald-900"></i>
+                    تواصل معنا عبر الواتساب
+                </a>
             </div>
         </div>
 
@@ -507,14 +518,12 @@
             }
         }
 
-        // دالة التبديل الذكية (تشغيل / إيقاف)
         function toggleNotifications() {
             if (!("Notification" in window)) {
                 alert("المتصفح لا يدعم التنبيهات المباشرة");
                 return;
             }
 
-            // إذا كانت مفعلة مسبقاً، نقوم بإيقافها
             if (notificationsEnabled) {
                 notificationsEnabled = false;
                 updateNotifyButtonUI();
@@ -522,7 +531,6 @@
                 return;
             }
 
-            // إذا لم تكن مفعلة، نطلب الإذن بتفعيلها
             if (Notification.permission === "granted") {
                 notificationsEnabled = true;
                 updateNotifyButtonUI();
@@ -556,7 +564,6 @@
             }
         }
 
-        // تحديث مظهر زر التنبيهات بناءً على حالته
         function updateNotifyButtonUI() {
             const btn = document.getElementById('notifyBtn');
             const text = document.getElementById('notifyText');
