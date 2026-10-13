@@ -244,24 +244,68 @@
             </div>
         </div>
 
-        <!-- 📢 إعلان غرف نوم المجد الأقوى في سوريا -->
-        <div class="w-full bg-gradient-to-r from-emerald-800 via-teal-800 to-slate-900 text-white rounded-2xl p-5 sm:p-6 shadow-xl border border-emerald-500/40 relative overflow-hidden my-6">
-            <span class="absolute top-2 left-3 text-[10px] font-bold text-amber-300 bg-black/40 px-2.5 py-0.5 rounded-md backdrop-blur-sm">إعلان مميز</span>
+        <!-- 📢 معرض صور دوّار لإعلان غرف نوم المجد -->
+        <div class="w-full bg-slate-900 text-white rounded-3xl border border-slate-800 shadow-2xl overflow-hidden my-6 relative group">
+            <span class="absolute top-3 left-4 text-[10px] font-bold text-amber-300 bg-black/60 px-3 py-1 rounded-full backdrop-blur-md z-20 border border-amber-400/20">إعلان مميز</span>
             
-            <div class="flex flex-col md:flex-row items-center justify-between gap-5">
-                <div class="text-right space-y-2">
-                    <h4 class="font-black text-lg sm:text-xl text-amber-400 flex items-center gap-2">
-                        🛏️ غرف نوم المجد - الأقوى والأفخم في سوريا
-                    </h4>
-                    <p class="text-xs sm:text-sm text-slate-200 leading-relaxed max-w-2xl">
-                        أقوى عروض غرف النوم المودرن وتفصيل خاص بحسب الطلب (خشب نخب أول، سحابات وإكسسوارات متينة، مع ضمان الجودة والمتانة التي تدوم طويلاً).
-                    </p>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-12 items-center">
                 
-                <a href="https://wa.me/9639xxxxxxx" target="_blank" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-6 py-3 rounded-xl transition-all duration-200 text-xs sm:text-sm shrink-0 shadow-lg flex items-center gap-2 border border-amber-300 transform hover:scale-105">
-                    <i class="fa-brands fa-whatsapp text-lg text-emerald-900"></i>
-                    تواصل معنا عبر الواتساب
-                </a>
+                <!-- Carousel Container (الجانب الأيمن للصور الدوارة) -->
+                <div class="md:col-span-7 relative h-56 sm:h-72 overflow-hidden bg-slate-950">
+                    <!-- Images List -->
+                    <div id="carouselSlides" class="w-full h-full relative transition-all duration-700 ease-in-out">
+                        <!-- Slide 1 -->
+                        <div class="slide absolute inset-0 opacity-100 transition-opacity duration-700">
+                            <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="غرف نوم مودرن">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent md:bg-gradient-to-l"></div>
+                        </div>
+                        <!-- Slide 2 -->
+                        <div class="slide absolute inset-0 opacity-0 transition-opacity duration-700">
+                            <img src="https://images.unsplash.com/photo-1540518614846-7ede433c5163?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="تصاميم غرف نوم">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent md:bg-gradient-to-l"></div>
+                        </div>
+                        <!-- Slide 3 -->
+                        <div class="slide absolute inset-0 opacity-0 transition-opacity duration-700">
+                            <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="تفصيل غرف خشب">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent md:bg-gradient-to-l"></div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Arrows -->
+                    <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition z-10 backdrop-blur-sm">
+                        <i class="fa-solid fa-chevron-left text-xs"></i>
+                    </button>
+                    <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition z-10 backdrop-blur-sm">
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+
+                    <!-- Indicators Dots -->
+                    <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10">
+                        <span onclick="goToSlide(0)" class="dot w-2.5 h-2.5 rounded-full bg-amber-400 cursor-pointer transition-all"></span>
+                        <span onclick="goToSlide(1)" class="dot w-2.5 h-2.5 rounded-full bg-white/40 cursor-pointer transition-all"></span>
+                        <span onclick="goToSlide(2)" class="dot w-2.5 h-2.5 rounded-full bg-white/40 cursor-pointer transition-all"></span>
+                    </div>
+                </div>
+
+                <!-- Ad Text Details (الجانب الأيسر لتفاصيل العرض) -->
+                <div class="md:col-span-5 p-5 sm:p-6 space-y-3 flex flex-col justify-between h-full text-right">
+                    <div class="space-y-2">
+                        <h4 class="font-black text-lg sm:text-xl text-amber-400 flex items-center gap-2">
+                            🛏️ مفروشات المجد - الأقوى في سوريا
+                        </h4>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            أقوى عروض غرف النوم المودرن وتفصيل خاص بحسب الطلب (خشب نخب أول، سحابات هيدروليك متينة، ومتانة تدوم طويلاً).
+                        </p>
+                    </div>
+
+                    <div class="pt-2">
+                        <a href="https://wa.me/9639xxxxxxx" target="_blank" class="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black py-3 px-4 rounded-xl transition duration-200 text-xs sm:text-sm shadow-lg flex items-center justify-center gap-2 transform hover:-translate-y-0.5">
+                            <i class="fa-brands fa-whatsapp text-lg text-emerald-900"></i>
+                            استفسر وتواصل معنا عبر الواتساب
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -466,11 +510,56 @@
         let lastUSDPrice = 0;
         let notificationsEnabled = false;
 
+        // Image Carousel Logic
+        let currentSlide = 0;
+        let carouselInterval = null;
+
         window.addEventListener('DOMContentLoaded', () => {
             fetchLiveRates();
             initChart();
             checkNotificationStatus();
+            startCarousel();
         });
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('#carouselSlides .slide');
+            const dots = document.querySelectorAll('.dot');
+            if (slides.length === 0) return;
+
+            if (index >= slides.length) currentSlide = 0;
+            else if (index < 0) currentSlide = slides.length - 1;
+            else currentSlide = index;
+
+            slides.forEach((slide, i) => {
+                slide.style.opacity = i === currentSlide ? '1' : '0';
+            });
+
+            dots.forEach((dot, i) => {
+                if (i === currentSlide) {
+                    dot.classList.remove('bg-white/40');
+                    dot.classList.add('bg-amber-400');
+                } else {
+                    dot.classList.remove('bg-amber-400');
+                    dot.classList.add('bg-white/40');
+                }
+            });
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+        }
+
+        function startCarousel() {
+            carouselInterval = setInterval(nextSlide, 3500);
+        }
 
         function dismissBanner() {
             document.getElementById('notificationBanner').style.display = 'none';
