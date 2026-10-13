@@ -19,8 +19,8 @@
     <div class="max-w-2xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-6">
         
         <div class="text-center space-y-2 border-b border-slate-800 pb-4">
-            <h1 class="text-2xl font-black text-amber-400">⚙️ لوحة تحكم إعلانات التطبيق</h1>
-            <p class="text-xs text-slate-400">تعديل الإعلانات والصور في تطبيق "الليرة اليوم" بضغطة زر واحدة</p>
+            <h1 class="text-2xl font-black text-amber-400">⚙️ لوحة تحكم الإعلانات</h1>
+            <p class="text-xs text-slate-400">رفع الصور وتعديل الإعلان في تطبيق "الليرة اليوم" بضغطة زر</p>
         </div>
 
         <form id="adForm" class="space-y-4">
@@ -42,28 +42,14 @@
             <hr class="border-slate-800 my-4">
 
             <div class="space-y-3">
-                <label class="block text-xs font-bold text-amber-400">🖼️ روابط الصور للمعرض الدوار (ضع روابط مباشرة):</label>
-                <div>
-                    <span class="text-[10px] text-slate-400">الصورة الأولى:</span>
-                    <input type="url" id="img1" required class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none">
-                </div>
-                <div>
-                    <span class="text-[10px] text-slate-400">الصورة الثانية:</span>
-                    <input type="url" id="img2" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none">
-                </div>
-                <div>
-                    <span class="text-[10px] text-slate-400">الصورة الثالثة:</span>
-                    <input type="url" id="img3" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none">
-                </div>
-                <div>
-                    <span class="text-[10px] text-slate-400">الصورة الرابعة:</span>
-                    <input type="url" id="img4" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none">
-                </div>
+                <label class="block text-xs font-bold text-amber-400">📁 اختر الصور من جهازك مباشرة (يمكنك تحديد حتى 4 صور):</label>
+                <input type="file" id="imgFiles" accept="image/*" multiple class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+                <p class="text-[10px] text-slate-400">ملاحظة: إذا لم تقتنص صوراً جديدة، سيتم الاحتفاظ بالصور الحالية المرفوعة سابقاً.</p>
             </div>
 
             <button type="submit" id="saveBtn" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 px-4 rounded-xl transition duration-200 text-sm shadow-lg flex items-center justify-center gap-2 mt-6">
-                <i class="fa-solid fa-floppy-disk"></i>
-                حفظ ونشر التعديلات فوراً
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                رفع الصور ونشر التعديلات فوراً
             </button>
         </form>
 
@@ -83,6 +69,7 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+        let currentImages = [];
 
         // جلب البيانات الحالية
         db.ref('advertisement').once('value', (snapshot) => {
@@ -92,44 +79,66 @@
                 document.getElementById('adDesc').value = data.desc || '';
                 document.getElementById('adPhone').value = data.phone || '';
                 if(data.images) {
-                    document.getElementById('img1').value = data.images[0] || '';
-                    document.getElementById('img2').value = data.images[1] || '';
-                    document.getElementById('img3').value = data.images[2] || '';
-                    document.getElementById('img4').value = data.images[3] || '';
+                    currentImages = data.images;
                 }
             }
         });
 
-        // حفظ التعديلات
-        document.getElementById('adForm').addEventListener('submit', (e) => {
+        // دالة رفع الصورة تلقائياً لخدمة استضافة واستخراج الرابط
+        async function uploadImageToHost(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            // رفع مباشر عبر API ImgBB المجاني
+            const res = await fetch('https://api.imgbb.com/1/upload?key=6d207e02198a847aa98d0a2a901485a5', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            if(data && data.data && data.data.url) {
+                return data.data.url;
+            } else {
+                throw new Error('فشل رفع إحدى الصور');
+            }
+        }
+
+        // حفظ التعديلات والرفع
+        document.getElementById('adForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('saveBtn');
             btn.disabled = true;
-            btn.innerText = "جاري الحفظ والتحديث...";
+            btn.innerText = "جاري رفع الصور والتحديث...";
 
-            const images = [
-                document.getElementById('img1').value,
-                document.getElementById('img2').value,
-                document.getElementById('img3').value,
-                document.getElementById('img4').value
-            ].filter(url => url.trim() !== '');
+            const fileInput = document.getElementById('imgFiles');
+            let uploadedUrls = [];
 
-            const adData = {
-                title: document.getElementById('adTitle').value,
-                desc: document.getElementById('adDesc').value,
-                phone: document.getElementById('adPhone').value,
-                images: images,
-                updatedAt: new Date().toISOString()
-            };
+            try {
+                if (fileInput.files.length > 0) {
+                    showStatus('جاري رفع الصور المحددة...', 'bg-blue-500/20 text-blue-400');
+                    for (let i = 0; i < Math.min(fileInput.files.length, 4); i++) {
+                        const url = await uploadImageToHost(fileInput.files[i]);
+                        uploadedUrls.push(url);
+                    }
+                } else {
+                    uploadedUrls = currentImages;
+                }
 
-            db.ref('advertisement').set(adData).then(() => {
-                showStatus('تم تحديث الإعلان بنجاح في التطبيق!', 'bg-emerald-500/20 text-emerald-400');
-            }).catch((err) => {
-                showStatus('حدث خطأ أثناء الحفظ: ' + err.message, 'bg-rose-500/20 text-rose-400');
-            }).finally(() => {
+                const adData = {
+                    title: document.getElementById('adTitle').value,
+                    desc: document.getElementById('adDesc').value,
+                    phone: document.getElementById('adPhone').value,
+                    images: uploadedUrls,
+                    updatedAt: new Date().toISOString()
+                };
+
+                await db.ref('advertisement').set(adData);
+                currentImages = uploadedUrls;
+                showStatus('تم رفع الصور وتحديث الإعلان بنجاح!', 'bg-emerald-500/20 text-emerald-400');
+            } catch (err) {
+                showStatus('حدث خطأ أثناء الرفع: ' + err.message, 'bg-rose-500/20 text-rose-400');
+            } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> حفظ ونشر التعديلات فوراً';
-            });
+                btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> رفع الصور ونشر التعديلات فوراً';
+            }
         });
 
         function showStatus(msg, classes) {
@@ -137,7 +146,6 @@
             status.className = `text-center text-xs font-bold p-3 rounded-xl ${classes}`;
             status.innerText = msg;
             status.classList.remove('hidden');
-            setTimeout(() => status.classList.add('hidden'), 4000);
         }
     </script>
 </body>
