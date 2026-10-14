@@ -608,28 +608,35 @@
                 if (result && result.contents) {
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(result.contents, 'text/html');
-                    const textContent = doc.body.innerText;
-
-                    let newBuy = 13950;
-                    let newSell = 14050;
-
-                    if (textContent.includes('139.50') || textContent.includes('140.50')) {
-                        newBuy = 13950;
-                        newSell = 14050;
+                    
+                    let extractedSell = null;
+                    const priceElements = doc.querySelectorAll('.price, .value, span, div');
+                    for (let el of priceElements) {
+                        let text = el.innerText.trim();
+                        let num = parseInt(text.replace(/,/g, ''));
+                        if (!isNaN(num) && num >= 13000 && num <= 25000) {
+                            extractedSell = num;
+                            break;
+                        }
                     }
 
-                    if (lastUSDPrice !== 0 && lastUSDPrice !== newSell && notificationsEnabled) {
-                        sendPriceNotification(newSell);
-                    }
-                    lastUSDPrice = newSell;
+                    if (extractedSell) {
+                        let newSell = extractedSell;
+                        let newBuy = newSell - 100;
 
-                    exchangeData.damascus.usd.buy = newBuy;
-                    exchangeData.damascus.usd.sell = newSell;
-                    exchangeData.aleppo.usd.buy = newBuy;
-                    exchangeData.aleppo.usd.sell = newSell;
+                        if (lastUSDPrice !== 0 && lastUSDPrice !== newSell && notificationsEnabled) {
+                            sendPriceNotification(newSell);
+                        }
+                        lastUSDPrice = newSell;
+
+                        exchangeData.damascus.usd.buy = newBuy;
+                        exchangeData.damascus.usd.sell = newSell;
+                        exchangeData.aleppo.usd.buy = newBuy;
+                        exchangeData.aleppo.usd.sell = newSell;
+                    }
                 }
             } catch (error) {
-                console.log("استخدام الأسعار المخزنة", error);
+                console.log("تعذر جلب التحديث الآلي، يتم الاستمرار بالأسعار الحالية", error);
             } finally {
                 if (icon) icon.classList.remove('fa-spin');
                 updateUI();
