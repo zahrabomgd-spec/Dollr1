@@ -15,24 +15,38 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install requests beautifulsoup4
 
       - name: Fetch and Update Rates
         run: |
           python -c "
           import requests, re, json, time
+          from bs4 import BeautifulSoup
 
           url = 'https://sp-today.com/'
-          headers = {'User-Agent': 'Mozilla/5.0'}
+          headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+          usd_sell = 14050
+
           try:
               res = requests.get(url, headers=headers, timeout=15)
-              prices = re.findall(r'(\d{2,3}[,\.]\d{2,3})', res.text)
-              usd_sell = 14050
-              for p in prices:
-                  val = int(p.replace(',', '').replace('.', ''))
-                  if 13000 <= val <= 25000:
-                      usd_sell = val
-                      break
+              soup = BeautifulSoup(res.text, 'html.parser')
+              
+              # البحث عن أرقام الأسعار في الصفحة
+              text = soup.get_text()
+              matches = re.findall(r'(\d{1,2}[,\.]\d{3})', text)
+              
+              valid_prices = []
+              for m in matches:
+                  num = int(m.replace(',', '').replace('.', ''))
+                  if 10000 <= num <= 30000:
+                      valid_prices.append(num)
+              
+              if valid_prices:
+                  usd_sell = valid_prices[0]
+                  print('Fetched real USD price:', usd_sell)
+              else:
+                  print('Using fallback price:', usd_sell)
+
               usd_buy = usd_sell - 100
 
               payload = {
