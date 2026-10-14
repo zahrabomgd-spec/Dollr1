@@ -1,0 +1,46 @@
+name: Update Exchange Rates Automatically
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  update-rates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch and Update Rates
+        run: |
+          python -c "
+          import urllib.request, json, re, time
+
+          url = 'https://sp-today.com/'
+          req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+          try:
+              html = urllib.request.urlopen(req).read().decode('utf-8')
+              prices = re.findall(r'(\d{2,3}[,\.]\d{2,3})', html)
+              usd_sell = 14050
+              for p in prices:
+                  val = int(p.replace(',', '').replace('.', ''))
+                  if 13000 <= val <= 25000:
+                      usd_sell = val
+                      break
+              usd_buy = usd_sell - 100
+              
+              data = {
+                  'lastUpdated': f'تم التحديث آلياً الساعة {time.strftime(\"%H:%M\")}',
+                  'exchangeData': {
+                      'damascus': {'name': 'دمشق', 'usd': {'buy': usd_buy, 'sell': usd_sell}, 'eur': {'buy': int(usd_buy*1.1), 'sell': int(usd_sell*1.1)}, 'try': {'buy': 281, 'sell': 285}, 'gold21': {'buy': 16400, 'sell': 16600}, 'gold18': {'buy': 14000, 'sell': 14200}, 'gold24': {'buy': 18700, 'sell': 19000}},
+                      'aleppo': {'name': 'حلب', 'usd': {'buy': usd_buy, 'sell': usd_sell}, 'eur': {'buy': int(usd_buy*1.1), 'sell': int(usd_sell*1.1)}, 'try': {'buy': 281, 'sell': 285}, 'gold21': {'buy': 16400, 'sell': 16600}, 'gold18': {'buy': 14000, 'sell': 14200}, 'gold24': {'buy': 18700, 'sell': 19000}},
+                      'idlib': {'name': 'إدلب', 'usd': {'buy': usd_buy+200, 'sell': usd_sell+250}, 'eur': {'buy': int((usd_buy+200)*1.1), 'sell': int((usd_sell+250)*1.1)}, 'try': {'buy': 287, 'sell': 291}, 'gold21': {'buy': 16650, 'sell': 16860}, 'gold18': {'buy': 14270, 'sell': 14450}, 'gold24': {'buy': 19020, 'sell': 19260}},
+                      'hasakah': {'name': 'الحسكة', 'usd': {'buy': usd_buy+220, 'sell': usd_sell+270}, 'eur': {'buy': int((usd_buy+220)*1.1), 'sell': int((usd_sell+270)*1.1)}, 'try': {'buy': 288, 'sell': 292}, 'gold21': {'buy': 16680, 'sell': 16890}, 'gold18': {'buy': 14290, 'sell': 14480}, 'gold24': {'buy': 19050, 'sell': 19290}}
+                  }
+              }
+
+              fb_url = 'https://dollr-ads-default-rtdb.firebaseio.com/rates.json'
+              req_fb = urllib.request.Request(fb_url, data=json.dumps(data).encode('utf-8'), headers={'Content-Type': 'application/json'}, method='PUT')
+              urllib.request.urlopen(req_fb)
+              print('Updated successfully!')
+          except Exception as e:
+              print('Error:', e)
+          "
