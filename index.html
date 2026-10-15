@@ -117,6 +117,37 @@
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
+        <!-- 📢 معرض صور دوّار لإعلان مفروشات المجد (أول عنصر) -->
+        <div class="w-full bg-slate-900 text-white rounded-2xl border border-slate-800 shadow-lg overflow-hidden relative group max-w-3xl mx-auto">
+            <span class="absolute top-2 left-3 text-[9px] font-bold text-amber-300 bg-black/60 px-2 py-0.5 rounded-full backdrop-blur-md z-20 border border-amber-400/20">إعلان</span>
+            
+            <div class="grid grid-cols-1 md:grid-cols-12 items-center">
+                <div class="md:col-span-7 relative h-40 sm:h-48 overflow-hidden bg-slate-950">
+                    <div id="carouselSlides" class="w-full h-full relative transition-all duration-700 ease-in-out"></div>
+                    <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition z-10 backdrop-blur-sm">
+                        <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                    </button>
+                    <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition z-10 backdrop-blur-sm">
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                    <div id="carouselDots" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1 z-10"></div>
+                </div>
+
+                <div class="md:col-span-5 p-3 space-y-2 flex flex-col justify-between h-full text-right">
+                    <div class="space-y-1">
+                        <h4 id="adTitle" class="font-black text-sm sm:text-base text-amber-400 flex items-center gap-1">جاري الجلب...</h4>
+                        <p id="adDescription" class="text-[10px] sm:text-xs text-slate-300 leading-relaxed">يرجى الانتظار لحين جلب الإعلان...</p>
+                    </div>
+                    <div class="pt-1">
+                        <a id="adWhatsappBtn" href="#" target="_blank" class="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black py-2 px-3 rounded-lg transition duration-200 text-[10px] sm:text-xs shadow-lg flex items-center justify-center gap-1 transform hover:-translate-y-0.5">
+                            <i class="fa-brands fa-whatsapp text-sm text-emerald-900"></i>
+                            تواصل معنا
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="bg-emerald-600 dark:bg-emerald-950/60 border border-emerald-500/20 text-white rounded-2xl p-3 px-4 flex flex-wrap items-center justify-between gap-3 shadow-sm">
             <div class="flex items-center gap-2 text-xs sm:text-sm font-bold">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
@@ -227,37 +258,6 @@
                         <span class="block text-[11px] text-slate-400 font-medium">المبيع</span>
                         <span id="gold21Sell" class="text-lg font-black text-amber-500">16,600</span>
                         <span class="text-[10px] text-slate-400">ل.س</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 📢 معرض صور دوّار لإعلان مفروشات المجد -->
-        <div class="w-full bg-slate-900 text-white rounded-3xl border border-slate-800 shadow-2xl overflow-hidden my-6 relative group">
-            <span class="absolute top-3 left-4 text-[10px] font-bold text-amber-300 bg-black/60 px-3 py-1 rounded-full backdrop-blur-md z-20 border border-amber-400/20">إعلان مميز</span>
-            
-            <div class="grid grid-cols-1 md:grid-cols-12 items-center">
-                <div class="md:col-span-7 relative h-56 sm:h-72 overflow-hidden bg-slate-950">
-                    <div id="carouselSlides" class="w-full h-full relative transition-all duration-700 ease-in-out"></div>
-                    <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition z-10 backdrop-blur-sm">
-                        <i class="fa-solid fa-chevron-left text-xs"></i>
-                    </button>
-                    <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition z-10 backdrop-blur-sm">
-                        <i class="fa-solid fa-chevron-right text-xs"></i>
-                    </button>
-                    <div id="carouselDots" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10"></div>
-                </div>
-
-                <div class="md:col-span-5 p-5 sm:p-6 space-y-3 flex flex-col justify-between h-full text-right">
-                    <div class="space-y-2">
-                        <h4 id="adTitle" class="font-black text-lg sm:text-xl text-amber-400 flex items-center gap-2">جاري الجلب...</h4>
-                        <p id="adDescription" class="text-xs sm:text-sm text-slate-300 leading-relaxed">يرجى الانتظار لحين جلب الإعلان...</p>
-                    </div>
-                    <div class="pt-2">
-                        <a id="adWhatsappBtn" href="#" target="_blank" class="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black py-3 px-4 rounded-xl transition duration-200 text-xs sm:text-sm shadow-lg flex items-center justify-center gap-2 transform hover:-translate-y-0.5">
-                            <i class="fa-brands fa-whatsapp text-lg text-emerald-900"></i>
-                            استفسر وتواصل معنا عبر الواتساب
-                        </a>
                     </div>
                 </div>
             </div>
