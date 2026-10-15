@@ -7,7 +7,7 @@ FIREBASE_URL = "https://dollr-ads-default-rtdb.firebaseio.com/rates.json"
 
 def fetch_price(url, currency_name):
     """
-    جلب سعر الشراء والمبيع من موقع sp-today.com بطريقة دقيقة
+    جلب سعر الشراء والمبيع من موقع sp-today.com بطريقة دقيقة جداً
     """
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
@@ -17,39 +17,68 @@ def fetch_price(url, currency_name):
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # البحث عن جميع النصوص التي تحتوي على "SYP" أو "ل.س"
-        # نبحث عن النصوص التي تحتوي على أرقام عشرية (مثل 2.79 أو 154.50)
+        # ✅ الطريقة الأكثر دقة: البحث عن العناصر التي تحتوي على "شراء" أو "مبيع"
+        # نبحث عن النص الذي يحتوي على "شراء" (Buy) و "مبيع" (Sell)
         
-        # الطريقة الأكثر دقة: البحث عن العناصر التي تحتوي على كلمة "شراء" و "مبيع"
-        # في الصفحة العربية، "شراء" = Buy، "مبيع" = Sell
+        buy_price = None
+        sell_price = None
         
-        # نبحث عن جميع النصوص في الصفحة
-        all_text = soup.get_text()
+        # البحث عن جميع العناصر النصية في الصفحة
+        all_elements = soup.find_all(string=True)
         
-        # طريقة بديلة: البحث عن جميع العناصر التي تحتوي على "SYP"
-        price_elements = soup.find_all(string=lambda text: text and ('SYP' in text or 'ل.س' in text))
-        
-        # تصفية العناصر التي تحتوي على أرقام عشرية فقط
-        decimal_prices = []
-        for elem in price_elements:
+        # البحث عن السعر بجانب كلمة "شراء"
+        for i, elem in enumerate(all_elements):
             text = elem.strip()
-            # نبحث عن نمط رقم عشري (مثل 2.79 أو 154.50)
-            match = re.search(r'(\d+\.\d+)', text)
-            if match:
-                decimal_prices.append(float(match.group(1)))
+            if 'شراء' in text or 'Buy' in text:
+                # ابحث عن الرقم في العنصر الحالي أو التالي
+                match = re.search(r'(\d+\.\d+)', text)
+                if match:
+                    buy_price = float(match.group(1))
+                    break
+                # إذا لم يوجد رقم في نفس العنصر، ابحث في العنصر التالي
+                if i + 1 < len(all_elements):
+                    next_text = all_elements[i + 1].strip()
+                    match = re.search(r'(\d+\.\d+)', next_text)
+                    if match:
+                        buy_price = float(match.group(1))
+                        break
         
-        if len(decimal_prices) < 2:
-            print(f"⚠️ لم يتم العثور على سعرين في صفحة {currency_name}")
+        # البحث عن السعر بجانب كلمة "مبيع"
+        for i, elem in enumerate(all_elements):
+            text = elem.strip()
+            if 'مبيع' in text or 'Sell' in text:
+                match = re.search(r'(\d+\.\d+)', text)
+                if match:
+                    sell_price = float(match.group(1))
+                    break
+                if i + 1 < len(all_elements):
+                    next_text = all_elements[i + 1].strip()
+                    match = re.search(r'(\d+\.\d+)', next_text)
+                    if match:
+                        sell_price = float(match.group(1))
+                        break
+        
+        # إذا لم نجد السعر بالطريقة أعلاه، نستخدم الطريقة الاحتياطية
+        if buy_price is None or sell_price is None:
+            print(f"⚠️ استخدام الطريقة الاحتياطية لـ {currency_name}")
+            price_elements = soup.find_all(string=lambda text: text and re.search(r'\d+\.\d+', text))
+            decimal_prices = []
+            for elem in price_elements:
+                match = re.search(r'(\d+\.\d+)', elem.strip())
+                if match:
+                    decimal_prices.append(float(match.group(1)))
+            
+            if len(decimal_prices) >= 2:
+                buy_price = decimal_prices[0]
+                sell_price = decimal_prices[1]
+        
+        if buy_price is None or sell_price is None:
+            print(f"❌ فشل استخراج سعر {currency_name}")
             return None, None
         
-        # في صفحة sp-today، السعر الأول عادة هو Buy والثاني هو Sell
-        # (لأن الصفحة تعرض Buy أولاً ثم Sell)
-        buy_new = decimal_prices[0]
-        sell_new = decimal_prices[1]
-        
         # تحويل إلى ليرة قديمة (ضرب في 100)
-        buy_old = int(buy_new * 100)
-        sell_old = int(sell_new * 100)
+        buy_old = int(buy_price * 100)
+        sell_old = int(sell_price * 100)
         
         print(f"✅ {currency_name}: شراء = {buy_old}, مبيع = {sell_old}")
         return buy_old, sell_old
@@ -59,9 +88,6 @@ def fetch_price(url, currency_name):
         return None, None
 
 def fetch_gold_price():
-    """
-    جلب سعر الأونصة العالمي
-    """
     try:
         response = requests.get('https://api.goldprice.dev/v1/prices?symbol=XAU-USD-SPOT', timeout=10)
         data = response.json()
@@ -73,19 +99,16 @@ def fetch_gold_price():
 # === جلب أسعار العملات ===
 print("🔄 جاري جلب أسعار العملات...")
 
-# الدولار
 usd_buy, usd_sell = fetch_price("https://sp-today.com/en/currency/us-dollar", "الدولار")
 if usd_buy is None:
     usd_buy = 13900
     usd_sell = 13975
 
-# اليورو
 eur_buy, eur_sell = fetch_price("https://sp-today.com/en/currency/euro", "اليورو")
 if eur_buy is None:
     eur_buy = 15450
     eur_sell = 15600
 
-# الليرة التركية
 try_buy, try_sell = fetch_price("https://sp-today.com/en/currency/turkish-lira", "الليرة التركية")
 if try_buy is None:
     try_buy = 279
