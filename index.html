@@ -456,6 +456,33 @@
     </footer>
 
     <script>
+        // ✅ كود إخفاء القيم القديمة وإظهار "يتم التحديث..."
+        document.addEventListener('DOMContentLoaded', function() {
+            // قائمة بكل العناصر التي تعرض الأسعار
+            const priceElements = [
+                'usdBuy', 'usdSell', 'usdBriefPrice',
+                'eurBuy', 'eurSell',
+                'tryBuy', 'trySell',
+                'gold21Buy', 'gold21Sell', 'gold21TablePrice', 'goldBriefPrice',
+                'gold18Price', 'gold24Price',
+                'damascusComp', 'aleppoComp', 'idlibComp', 'hasakahComp'
+            ];
+            
+            // استبدال القيم بـ "..." أو "يتم التحديث..."
+            priceElements.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.innerText = '...';
+                }
+            });
+            
+            // حقل الوقت له معاملة خاصة
+            const timeEl = document.getElementById('lastUpdatedTime');
+            if (timeEl) {
+                timeEl.innerText = 'جاري التحديث...';
+            }
+        });
+
         const firebaseConfig = {
             apiKey: "AIzaSyBdfuIlyVzoJFLLxmIXI5st5yPFkNelflY",
             authDomain: "dollr-ads.firebaseapp.com",
