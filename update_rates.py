@@ -5,9 +5,9 @@ from datetime import datetime
 
 FIREBASE_URL = "https://dollr-ads-default-rtdb.firebaseio.com/rates.json"
 
-def fetch_price(url):
+def fetch_price(url, currency_name):
     """
-    جلب سعر الشراء والمبيع من موقع sp-today.com
+    جلب سعر الشراء والمبيع من موقع sp-today.com بطريقة دقيقة
     """
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
@@ -17,41 +17,45 @@ def fetch_price(url):
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # البحث عن عناصر "Buy" و "Sell" في الصفحة
-        # السعر عادة يظهر بصيغة: 139.00SYP (new)
+        # البحث عن جميع النصوص التي تحتوي على "SYP" أو "ل.س"
+        # نبحث عن النصوص التي تحتوي على أرقام عشرية (مثل 2.79 أو 154.50)
         
-        # نبحث عن كل العناصر التي تحتوي على "SYP (new)"
-        elements = soup.find_all(string=lambda text: text and 'SYP (new)' in text)
+        # الطريقة الأكثر دقة: البحث عن العناصر التي تحتوي على كلمة "شراء" و "مبيع"
+        # في الصفحة العربية، "شراء" = Buy، "مبيع" = Sell
         
-        if len(elements) < 2:
-            print(f"⚠️ لم يتم العثور على سعري الشراء والمبيع في: {url}")
+        # نبحث عن جميع النصوص في الصفحة
+        all_text = soup.get_text()
+        
+        # طريقة بديلة: البحث عن جميع العناصر التي تحتوي على "SYP"
+        price_elements = soup.find_all(string=lambda text: text and ('SYP' in text or 'ل.س' in text))
+        
+        # تصفية العناصر التي تحتوي على أرقام عشرية فقط
+        decimal_prices = []
+        for elem in price_elements:
+            text = elem.strip()
+            # نبحث عن نمط رقم عشري (مثل 2.79 أو 154.50)
+            match = re.search(r'(\d+\.\d+)', text)
+            if match:
+                decimal_prices.append(float(match.group(1)))
+        
+        if len(decimal_prices) < 2:
+            print(f"⚠️ لم يتم العثور على سعرين في صفحة {currency_name}")
             return None, None
         
-        # السعر الأول عادة هو Buy، والثاني هو Sell
+        # في صفحة sp-today، السعر الأول عادة هو Buy والثاني هو Sell
         # (لأن الصفحة تعرض Buy أولاً ثم Sell)
-        buy_text = elements[0].strip()
-        sell_text = elements[1].strip()
+        buy_new = decimal_prices[0]
+        sell_new = decimal_prices[1]
         
-        print(f"Buy: {buy_text}")
-        print(f"Sell: {sell_text}")
+        # تحويل إلى ليرة قديمة (ضرب في 100)
+        buy_old = int(buy_new * 100)
+        sell_old = int(sell_new * 100)
         
-        # استخراج الأرقام
-        buy_match = re.search(r'(\d+\.?\d*)', buy_text)
-        sell_match = re.search(r'(\d+\.?\d*)', sell_text)
-        
-        if buy_match and sell_match:
-            buy_new = float(buy_match.group(1))
-            sell_new = float(sell_match.group(1))
-            # تحويل إلى ليرة قديمة (ضرب في 100)
-            buy_old = int(buy_new * 100)
-            sell_old = int(sell_new * 100)
-            return buy_old, sell_old
-        else:
-            print(f"⚠️ لم يتم استخراج الأرقام من: {url}")
-            return None, None
+        print(f"✅ {currency_name}: شراء = {buy_old}, مبيع = {sell_old}")
+        return buy_old, sell_old
             
     except Exception as e:
-        print(f"❌ خطأ في جلب السعر من {url}: {e}")
+        print(f"❌ خطأ في جلب سعر {currency_name}: {e}")
         return None, None
 
 def fetch_gold_price():
@@ -70,28 +74,22 @@ def fetch_gold_price():
 print("🔄 جاري جلب أسعار العملات...")
 
 # الدولار
-usd_buy, usd_sell = fetch_price("https://sp-today.com/en/currency/us-dollar")
+usd_buy, usd_sell = fetch_price("https://sp-today.com/en/currency/us-dollar", "الدولار")
 if usd_buy is None:
-    print("⚠️ فشل جلب سعر الدولار، استخدام السعر الافتراضي")
     usd_buy = 13900
     usd_sell = 13975
-print(f"✅ الدولار: شراء = {usd_buy}, مبيع = {usd_sell}")
 
 # اليورو
-eur_buy, eur_sell = fetch_price("https://sp-today.com/en/currency/euro")
+eur_buy, eur_sell = fetch_price("https://sp-today.com/en/currency/euro", "اليورو")
 if eur_buy is None:
-    print("⚠️ فشل جلب سعر اليورو، استخدام السعر الافتراضي")
-    eur_buy = 15490
-    eur_sell = 15690
-print(f"✅ اليورو: شراء = {eur_buy}, مبيع = {eur_sell}")
+    eur_buy = 15450
+    eur_sell = 15600
 
 # الليرة التركية
-try_buy, try_sell = fetch_price("https://sp-today.com/en/currency/turkish-lira")
+try_buy, try_sell = fetch_price("https://sp-today.com/en/currency/turkish-lira", "الليرة التركية")
 if try_buy is None:
-    print("⚠️ فشل جلب سعر الليرة التركية، استخدام السعر الافتراضي")
-    try_buy = 281
-    try_sell = 285
-print(f"✅ الليرة التركية: شراء = {try_buy}, مبيع = {try_sell}")
+    try_buy = 279
+    try_sell = 283
 
 # === جلب سعر الذهب وحسابه ===
 gold_usd = fetch_gold_price()
@@ -99,7 +97,6 @@ gold_gram_usd = gold_usd / 31.1035
 gold_21_sell = int(gold_gram_usd * usd_sell * 0.875 * 1.05)
 gold_18_sell = int(gold_gram_usd * usd_sell * 0.75 * 1.05)
 gold_24_sell = int(gold_gram_usd * usd_sell * 1.05)
-print(f"✅ الذهب (عيار 21): {gold_21_sell}")
 
 # === تجهيز البيانات ===
 payload = {
