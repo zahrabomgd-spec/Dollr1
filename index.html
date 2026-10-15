@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" class="dark">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,7 +70,7 @@
     <link rel="apple-touch-icon" href="https://zahrabomgd-spec.github.io/Dollr1/icon.jpg">
     <link rel="manifest" href="https://zahrabomgd-spec.github.io/Dollr1/app.webmanifest">
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col transition-colors duration-300">
 
     <!-- Notice Banner for Notifications -->
     <div id="notificationBanner" class="bg-amber-500 text-slate-950 font-bold px-4 py-2 text-xs sm:text-sm flex items-center justify-between shadow-md relative z-50">
@@ -84,7 +84,7 @@
     </div>
 
     <!-- Header -->
-    <header class="sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 transition-colors">
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-white/90 border-b border-slate-200 transition-colors">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-2">
             
             <div class="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -92,24 +92,23 @@
                     <i class="fa-solid fa-coins"></i>
                 </div>
                 <div class="flex flex-col justify-center">
-                    <h1 class="font-black text-base sm:text-xl text-slate-900 dark:text-white leading-tight">الليرة اليوم</h1>
-                    <p class="text-[10px] sm:text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">أسعار الصرف والذهب</p>
+                    <h1 class="font-black text-base sm:text-xl text-slate-900 leading-tight">الليرة اليوم</h1>
+                    <p class="text-[10px] sm:text-[11px] font-semibold text-emerald-600">أسعار الصرف والذهب</p>
                 </div>
             </div>
 
-            
-
-                <button id="notifyBtn" onclick="toggleNotifications()" title="تشغيل / إيقاف التنبيهات" class="p-2 sm:p-2.5 bg-amber-500/20 text-amber-600 dark:text-amber-400 rounded-xl transition duration-200 flex items-center gap-1 text-xs sm:text-sm font-bold animate-pulse">
+            <div class="flex items-center gap-1.5 sm:gap-3">
+                <button id="notifyBtn" onclick="toggleNotifications()" title="تشغيل / إيقاف التنبيهات" class="p-2 sm:p-2.5 bg-amber-500/20 text-amber-600 rounded-xl transition duration-200 flex items-center gap-1 text-xs sm:text-sm font-bold animate-pulse">
                     <i id="notifyIcon" class="fa-solid fa-bell text-sm sm:text-base"></i>
                     <span class="hidden md:inline" id="notifyText">التنبيهات</span>
                 </button>
 
-                <button onclick="refreshData()" title="تحديث الأسعار الآن" class="p-2 sm:p-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-xl transition duration-200 flex items-center gap-1 text-xs sm:text-sm font-bold">
+                <button onclick="refreshData()" title="تحديث الأسعار الآن" class="p-2 sm:p-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 rounded-xl transition duration-200 flex items-center gap-1 text-xs sm:text-sm font-bold">
                     <i id="refreshIcon" class="fa-solid fa-rotate-right text-sm sm:text-base"></i>
                 </button>
 
-                <button onclick="toggleDarkMode()" title="تغيير المظهر" class="p-2 sm:p-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition">
-                    <i id="themeIcon" class="fa-solid fa-moon text-sm sm:text-base"></i>
+                <button onclick="toggleDarkMode()" title="تغيير المظهر" class="p-2 sm:p-2.5 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition">
+                    <i id="themeIcon" class="fa-solid fa-sun text-amber-500 text-sm sm:text-base"></i>
                 </button>
             </div>
         </div>
@@ -148,14 +147,14 @@
             </div>
         </div>
 
-        <div class="bg-emerald-600 dark:bg-emerald-950/60 border border-emerald-500/20 text-white rounded-2xl p-3 px-4 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+        <div class="bg-emerald-600 border border-emerald-500/20 text-white rounded-2xl p-3 px-4 flex flex-wrap items-center justify-between gap-3 shadow-sm">
             <div class="flex items-center gap-2 text-xs sm:text-sm font-bold">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                <span>تحديث فوري للسوق الموازي (<span id="selectedRegionText">دمشق</span>):</span>
+                <span>تحديث فوري للسوق الموازي (<span id="selectedRegionText">عموم سوريا</span>):</span>
                 <span id="lastUpdatedTime" class="text-emerald-200 font-normal">جاري الجلب من السيرفر...</span>
             </div>
             <div class="flex items-center gap-4 text-xs font-bold">
-                <span class="bg-emerald-700/60 dark:bg-emerald-900/80 px-2.5 py-1 rounded-lg">1$ = <span id="usdBriefPrice">14,050</span> ل.س</span>
+                <span class="bg-emerald-700/60 px-2.5 py-1 rounded-lg">1$ = <span id="usdBriefPrice">14,050</span> ل.س</span>
                 <span class="bg-amber-500/20 text-amber-200 px-2.5 py-1 rounded-lg border border-amber-400/30">غرام (21): <span id="goldBriefPrice">16,600</span> ل.س</span>
             </div>
         </div>
@@ -163,95 +162,95 @@
         <!-- Currencies Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- USD -->
-            <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition relative overflow-hidden group">
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition relative overflow-hidden group">
                 <div class="flex justify-between items-start mb-3">
                     <div class="flex items-center gap-2.5">
                         <span class="text-2xl">🇺🇸</span>
                         <div>
-                            <h3 class="font-bold text-slate-900 dark:text-white leading-none">الدولار الأمريكي</h3>
-                            <span class="text-[11px] text-slate-500 dark:text-slate-400">USD / SYP</span>
+                            <h3 class="font-bold text-slate-900 leading-none">الدولار الأمريكي</h3>
+                            <span class="text-[11px] text-slate-500">USD / SYP</span>
                         </div>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100">
                     <div>
                         <span class="block text-[11px] text-slate-400 font-medium">الشراء</span>
-                        <span id="usdBuy" class="text-lg font-black text-slate-800 dark:text-slate-100">13,950</span>
+                        <span id="usdBuy" class="text-lg font-black text-slate-800">13,950</span>
                         <span class="text-[10px] text-slate-400">ل.س</span>
                     </div>
                     <div>
                         <span class="block text-[11px] text-slate-400 font-medium">المبيع</span>
-                        <span id="usdSell" class="text-lg font-black text-emerald-600 dark:text-emerald-400">14,050</span>
+                        <span id="usdSell" class="text-lg font-black text-emerald-600">14,050</span>
                         <span class="text-[10px] text-slate-400">ل.س</span>
                     </div>
                 </div>
             </div>
 
             <!-- EUR -->
-            <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition relative overflow-hidden group">
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition relative overflow-hidden group">
                 <div class="flex justify-between items-start mb-3">
                     <div class="flex items-center gap-2.5">
                         <span class="text-2xl">🇪🇺</span>
                         <div>
-                            <h3 class="font-bold text-slate-900 dark:text-white leading-none">اليورو الأوروبي</h3>
-                            <span class="text-[11px] text-slate-500 dark:text-slate-400">EUR / SYP</span>
+                            <h3 class="font-bold text-slate-900 leading-none">اليورو الأوروبي</h3>
+                            <span class="text-[11px] text-slate-500">EUR / SYP</span>
                         </div>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100">
                     <div>
                         <span class="block text-[11px] text-slate-400 font-medium">الشراء</span>
-                        <span id="eurBuy" class="text-lg font-black text-slate-800 dark:text-slate-100">15,490</span>
+                        <span id="eurBuy" class="text-lg font-black text-slate-800">15,490</span>
                         <span class="text-[10px] text-slate-400">ل.س</span>
                     </div>
                     <div>
                         <span class="block text-[11px] text-slate-400 font-medium">المبيع</span>
-                        <span id="eurSell" class="text-lg font-black text-blue-600 dark:text-blue-400">15,690</span>
+                        <span id="eurSell" class="text-lg font-black text-blue-600">15,690</span>
                         <span class="text-[10px] text-slate-400">ل.س</span>
                     </div>
                 </div>
             </div>
 
             <!-- TRY -->
-            <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition relative overflow-hidden group">
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition relative overflow-hidden group">
                 <div class="flex justify-between items-start mb-3">
                     <div class="flex items-center gap-2.5">
                         <span class="text-2xl">🇹🇷</span>
                         <div>
-                            <h3 class="font-bold text-slate-900 dark:text-white leading-none">الليرة التركية</h3>
-                            <span class="text-[11px] text-slate-500 dark:text-slate-400">TRY / SYP</span>
+                            <h3 class="font-bold text-slate-900 leading-none">الليرة التركية</h3>
+                            <span class="text-[11px] text-slate-500">TRY / SYP</span>
                         </div>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100">
                     <div>
                         <span class="block text-[11px] text-slate-400 font-medium">الشراء</span>
-                        <span id="tryBuy" class="text-lg font-black text-slate-800 dark:text-slate-100">281</span>
+                        <span id="tryBuy" class="text-lg font-black text-slate-800">281</span>
                         <span class="text-[10px] text-slate-400">ل.س</span>
                     </div>
                     <div>
                         <span class="block text-[11px] text-slate-400 font-medium">المبيع</span>
-                        <span id="trySell" class="text-lg font-black text-rose-600 dark:text-rose-400">285</span>
+                        <span id="trySell" class="text-lg font-black text-rose-600">285</span>
                         <span class="text-[10px] text-slate-400">ل.س</span>
                     </div>
                 </div>
             </div>
 
             <!-- Gold 21K -->
-            <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-amber-500/30 dark:border-amber-500/20 shadow-sm hover:shadow-md transition relative overflow-hidden group glow-gold">
+            <div class="bg-white rounded-2xl p-5 border border-amber-500/30 shadow-sm hover:shadow-md transition relative overflow-hidden group glow-gold">
                 <div class="flex justify-between items-start mb-3">
                     <div class="flex items-center gap-2.5">
                         <span class="text-2xl">🪙</span>
                         <div>
-                            <h3 class="font-bold text-slate-900 dark:text-white leading-none">الذهب (عيار 21)</h3>
-                            <span class="text-[11px] text-slate-500 dark:text-slate-400">غرام عيار 21</span>
+                            <h3 class="font-bold text-slate-900 leading-none">الذهب (عيار 21)</h3>
+                            <span class="text-[11px] text-slate-500">غرام عيار 21</span>
                         </div>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-100">
                     <div>
                         <span class="block text-[11px] text-slate-400 font-medium">الشراء</span>
-                        <span id="gold21Buy" class="text-lg font-black text-slate-800 dark:text-slate-100">16,400</span>
+                        <span id="gold21Buy" class="text-lg font-black text-slate-800">16,400</span>
                         <span class="text-[10px] text-slate-400">ل.س</span>
                     </div>
                     <div>
@@ -265,26 +264,26 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Calculator -->
-            <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-6">
+            <div class="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-6">
                 <div>
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-bold">
                                 <i class="fa-solid fa-calculator"></i>
                             </div>
-                            <h2 class="font-bold text-lg text-slate-900 dark:text-white">حاسبة التحويل الفورية</h2>
+                            <h2 class="font-bold text-lg text-slate-900">حاسبة التحويل الفورية</h2>
                         </div>
-                        <button onclick="swapCurrencies()" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-3 py-1.5 rounded-xl hover:bg-emerald-100 transition flex items-center gap-1.5">
+                        <button onclick="swapCurrencies()" class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-xl hover:bg-emerald-100 transition flex items-center gap-1.5">
                             <i class="fa-solid fa-arrow-rotate-left"></i> عكس الاتجاه
                         </button>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 items-center">
-                        <div class="sm:col-span-2 bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+                        <div class="sm:col-span-2 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
                             <label class="block text-[11px] font-bold text-slate-400 mb-1" id="fromLabel">المبلغ المحوَّل</label>
                             <div class="flex items-center gap-2">
-                                <input type="number" id="calcAmountInput" value="100" oninput="calculateExchange()" class="w-full bg-transparent font-black text-xl text-slate-900 dark:text-white focus:outline-none">
-                                <select id="calcFromSelect" onchange="calculateExchange()" class="bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold text-xs p-1.5 rounded-lg border border-slate-200 dark:border-slate-600 focus:outline-none">
+                                <input type="number" id="calcAmountInput" value="100" oninput="calculateExchange()" class="w-full bg-transparent font-black text-xl text-slate-900 focus:outline-none">
+                                <select id="calcFromSelect" onchange="calculateExchange()" class="bg-white text-slate-800 font-bold text-xs p-1.5 rounded-lg border border-slate-200 focus:outline-none">
                                     <option value="USD">🇺🇸 USD</option>
                                     <option value="EUR">🇪🇺 EUR</option>
                                     <option value="TRY">🇹🇷 TRY</option>
@@ -294,82 +293,82 @@
                         </div>
 
                         <div class="flex justify-center">
-                            <button onclick="swapCurrencies()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 transition flex items-center justify-center shadow-sm">
+                            <button onclick="swapCurrencies()" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 hover:bg-emerald-500 hover:text-white transition flex items-center justify-center shadow-sm">
                                 <i class="fa-solid fa-arrow-right-arrow-left"></i>
                             </button>
                         </div>
 
-                        <div class="sm:col-span-2 bg-emerald-50/50 dark:bg-emerald-950/30 p-3.5 rounded-2xl border border-emerald-200 dark:border-emerald-800/50">
-                            <label class="block text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1" id="toLabel">النتيجة التقديرية</label>
+                        <div class="sm:col-span-2 bg-emerald-50/50 p-3.5 rounded-2xl border border-emerald-200">
+                            <label class="block text-[11px] font-bold text-emerald-600 mb-1" id="toLabel">النتيجة التقديرية</label>
                             <div class="flex items-center justify-between">
-                                <span id="calcResultText" class="font-black text-2xl text-emerald-700 dark:text-emerald-300">1,405,000</span>
-                                <span id="calcToCurrencyTag" class="font-bold text-xs bg-emerald-200 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-100 px-2 py-1 rounded-md">SYP</span>
+                                <span id="calcResultText" class="font-black text-2xl text-emerald-700">1,405,000</span>
+                                <span id="calcToCurrencyTag" class="font-bold text-xs bg-emerald-200 text-emerald-900 px-2 py-1 rounded-md">SYP</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-3 text-xs text-slate-500 dark:text-slate-400 flex items-center justify-between border border-slate-200/60 dark:border-slate-800">
+                <div class="bg-slate-50 rounded-xl p-3 text-xs text-slate-500 flex items-center justify-between border border-slate-200/60">
                     <span class="flex items-center gap-1.5">
                         <i class="fa-solid fa-circle-info text-emerald-500"></i>
-                        سعر الصرف المعتمد بالحاسبة: <strong id="calcRateNotice" class="text-slate-800 dark:text-slate-200">1 USD = 14,050 SYP</strong>
+                        سعر الصرف المعتمد بالحاسبة: <strong id="calcRateNotice" class="text-slate-800">1 USD = 14,050 SYP</strong>
                     </span>
-                    <span class="text-[10px] bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded font-bold">سوق حرة</span>
+                    <span class="text-[10px] bg-slate-200 px-2 py-0.5 rounded font-bold">سوق حرة</span>
                 </div>
             </div>
 
             <!-- Gold Table -->
-            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-4">
+            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
                 <div>
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <h3 class="font-bold text-slate-900 flex items-center gap-2">
                             <i class="fa-solid fa-gem text-amber-500"></i>
                             أسعار أسواق الذهب في سوريا
                         </h3>
-                        <span class="text-[10px] text-amber-600 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md font-bold">عيار نقي</span>
+                        <span class="text-[10px] text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md font-bold">عيار نقي</span>
                     </div>
 
                     <div class="space-y-2.5">
-                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50">
                             <div>
-                                <span class="block text-xs font-bold text-slate-800 dark:text-slate-200">غرام عيار 24</span>
+                                <span class="block text-xs font-bold text-slate-800">غرام عيار 24</span>
                                 <span class="text-[10px] text-slate-400">الذهب النقي</span>
                             </div>
                             <div class="text-left">
-                                <span id="gold24Price" class="block text-sm font-black text-amber-600 dark:text-amber-400">19,000</span>
+                                <span id="gold24Price" class="block text-sm font-black text-amber-600">19,000</span>
                                 <span class="text-[10px] text-slate-400">ل.س</span>
                             </div>
                         </div>
 
-                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200/50 dark:border-amber-800/40">
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-amber-50/60 border border-amber-200/50">
                             <div>
-                                <span class="block text-xs font-bold text-amber-900 dark:text-amber-200">غرام عيار 21</span>
-                                <span class="text-[10px] text-amber-700/70 dark:text-amber-400/70">الأكثر تداولاً</span>
+                                <span class="block text-xs font-bold text-amber-900">غرام عيار 21</span>
+                                <span class="text-[10px] text-amber-700/70">الأكثر تداولاً</span>
                             </div>
                             <div class="text-left">
-                                <span id="gold21TablePrice" class="block text-sm font-black text-amber-600 dark:text-amber-400">16,600</span>
+                                <span id="gold21TablePrice" class="block text-sm font-black text-amber-600">16,600</span>
                                 <span class="text-[10px] text-slate-400">ل.س</span>
                             </div>
                         </div>
 
-                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50">
                             <div>
-                                <span class="block text-xs font-bold text-slate-800 dark:text-slate-200">غرام عيار 18</span>
+                                <span class="block text-xs font-bold text-slate-800">غرام عيار 18</span>
                                 <span class="text-[10px] text-slate-400">صياغة خفيفة</span>
                             </div>
                             <div class="text-left">
-                                <span id="gold18Price" class="block text-sm font-black text-amber-600 dark:text-amber-400">14,200</span>
+                                <span id="gold18Price" class="block text-sm font-black text-amber-600">14,200</span>
                                 <span class="text-[10px] text-slate-400">ل.س</span>
                             </div>
                         </div>
 
-                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50">
                             <div>
-                                <span class="block text-xs font-bold text-slate-800 dark:text-slate-200">أونصة الذهب عالمياً</span>
+                                <span class="block text-xs font-bold text-slate-800">أونصة الذهب عالمياً</span>
                                 <span class="text-[10px] text-slate-400">XAU / USD</span>
                             </div>
                             <div class="text-left">
-                                <span class="block text-sm font-black text-slate-800 dark:text-slate-100">$4,166</span>
+                                <span class="block text-sm font-black text-slate-800">$4,166</span>
                                 <span class="text-[10px] text-rose-500 font-semibold">-0.66%</span>
                             </div>
                         </div>
@@ -378,70 +377,28 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-4">
-                <div class="flex items-center justify-between flex-wrap gap-2">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
-                            <i class="fa-solid fa-chart-line"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-slate-900 dark:text-white">مؤشر تغير سعر الدولار الأسبوعي</h3>
-                            <p class="text-xs text-slate-400">حركة سعر الصرف خلال آخر 7 أيام في دمشق</p>
-                        </div>
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-chart-line"></i>
                     </div>
-                </div>
-                <div class="relative w-full h-64">
-                    <canvas id="exchangeChart"></canvas>
+                    <div>
+                        <h3 class="font-bold text-slate-900">مؤشر تغير سعر الدولار الأسبوعي</h3>
+                        <p class="text-xs text-slate-400">حركة سعر الصرف خلال آخر 7 أيام في دمشق</p>
+                    </div>
                 </div>
             </div>
-
-            <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">
-                        <i class="fa-solid fa-map-location-dot"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-900 dark:text-white">مقارنة المحافظات اليوم</h3>
-                </div>
-
-                <div class="space-y-3">
-                    <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                        <div class="flex items-center gap-2">
-                            <span class="text-lg">🏛️</span>
-                            <div><span class="block font-bold text-xs text-slate-800 dark:text-slate-200">العاصمة دمشق</span></div>
-                        </div>
-                        <div class="text-left"><span id="damascusComp" class="block font-black text-sm text-slate-900 dark:text-white">13,950 / 14,050</span></div>
-                    </div>
-                    <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                        <div class="flex items-center gap-2">
-                            <span class="text-lg">🏰</span>
-                            <div><span class="block font-bold text-xs text-slate-800 dark:text-slate-200">محافظة حلب</span></div>
-                        </div>
-                        <div class="text-left"><span id="aleppoComp" class="block font-black text-sm text-slate-900 dark:text-white">13,950 / 14,050</span></div>
-                    </div>
-                    <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                        <div class="flex items-center gap-2">
-                            <span class="text-lg">🌳</span>
-                            <div><span class="block font-bold text-xs text-slate-800 dark:text-slate-200">مدينة إدلب</span></div>
-                        </div>
-                        <div class="text-left"><span id="idlibComp" class="block font-black text-sm text-slate-900 dark:text-white">14,200 / 14,300</span></div>
-                    </div>
-                    <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                        <div class="flex items-center gap-2">
-                            <span class="text-lg">🌾</span>
-                            <div><span class="block font-bold text-xs text-slate-800 dark:text-slate-200">الحسكة والقامشلي</span></div>
-                        </div>
-                        <div class="text-left"><span id="hasakahComp" class="block font-black text-sm text-slate-900 dark:text-white">14,220 / 14,320</span></div>
-                    </div>
-                </div>
+            <div class="relative w-full h-64">
+                <canvas id="exchangeChart"></canvas>
             </div>
         </div>
     </main>
 
-    <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 transition-colors">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+    <footer class="mt-auto border-t border-slate-200 bg-white py-6 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
             <div class="flex items-center gap-2">
-                <span class="font-bold text-slate-700 dark:text-slate-300">تطبيق الليرة اليوم</span>
+                <span class="font-bold text-slate-700">تطبيق الليرة اليوم</span>
                 <span>&copy; 2026 - جميع الأسعار مستقاة مباشرة من حركة السوق الموازي في سوريا.</span>
             </div>
         </div>
@@ -450,17 +407,14 @@
     <script>
         // ✅ كود إخفاء القيم القديمة وإظهار "يتم التحديث..."
         document.addEventListener('DOMContentLoaded', function() {
-            // قائمة بكل العناصر التي تعرض الأسعار
             const priceElements = [
                 'usdBuy', 'usdSell', 'usdBriefPrice',
                 'eurBuy', 'eurSell',
                 'tryBuy', 'trySell',
                 'gold21Buy', 'gold21Sell', 'gold21TablePrice', 'goldBriefPrice',
-                'gold18Price', 'gold24Price',
-                'damascusComp', 'aleppoComp', 'idlibComp', 'hasakahComp'
+                'gold18Price', 'gold24Price'
             ];
             
-            // استبدال القيم بـ "..." أو "يتم التحديث..."
             priceElements.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
@@ -468,7 +422,6 @@
                 }
             });
             
-            // حقل الوقت له معاملة خاصة
             const timeEl = document.getElementById('lastUpdatedTime');
             if (timeEl) {
                 timeEl.innerText = 'جاري التحديث...';
@@ -489,10 +442,7 @@
         const db = firebase.database();
 
         let exchangeData = {
-            damascus: { name: 'دمشق', usd: { buy: 13950, sell: 14050 }, eur: { buy: 15490, sell: 15690 }, try: { buy: 281, sell: 285 }, gold21: { buy: 16400, sell: 16600 }, gold18: { buy: 14000, sell: 14200 }, gold24: { buy: 18700, sell: 19000 } },
-            aleppo: { name: 'حلب', usd: { buy: 13950, sell: 14050 }, eur: { buy: 15490, sell: 15690 }, try: { buy: 281, sell: 285 }, gold21: { buy: 16400, sell: 16600 }, gold18: { buy: 14000, sell: 14200 }, gold24: { buy: 18700, sell: 19000 } },
-            idlib: { name: 'إدلب', usd: { buy: 14200, sell: 14300 }, eur: { buy: 15720, sell: 15960 }, try: { buy: 287, sell: 291 }, gold21: { buy: 16650, sell: 16860 }, gold18: { buy: 14270, sell: 14450 }, gold24: { buy: 19020, sell: 19260 } },
-            hasakah: { name: 'الحسكة', usd: { buy: 14220, sell: 14320 }, eur: { buy: 15740, sell: 15980 }, try: { buy: 288, sell: 292 }, gold21: { buy: 16680, sell: 16890 }, gold18: { buy: 14290, sell: 14480 }, gold24: { buy: 19050, sell: 19290 } }
+            damascus: { name: 'دمشق', usd: { buy: 13950, sell: 14050 }, eur: { buy: 15490, sell: 15690 }, try: { buy: 281, sell: 285 }, gold21: { buy: 16400, sell: 16600 }, gold18: { buy: 14000, sell: 14200 }, gold24: { buy: 18700, sell: 19000 } }
         };
 
         let currentRegion = 'damascus';
@@ -597,9 +547,27 @@
         function refreshData() {
             const icon = document.getElementById('refreshIcon');
             if (icon) icon.classList.add('fa-spin');
-            db.ref('rates').once('value').then(() => {
-                if (icon) icon.classList.remove('fa-spin');
-            });
+            
+            db.ref('rates').once('value')
+                .then((snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        if (data.exchangeData) {
+                            exchangeData = data.exchangeData;
+                        }
+                        updateUI();
+                        calculateExchange();
+                        if (data.lastUpdated) {
+                            document.getElementById('lastUpdatedTime').innerText = data.lastUpdated;
+                        }
+                    }
+                    if (icon) icon.classList.remove('fa-spin');
+                })
+                .catch((error) => {
+                    console.error("خطأ في التحديث:", error);
+                    if (icon) icon.classList.remove('fa-spin');
+                    alert("تعذر تحديث الأسعار. تحقق من اتصالك بالإنترنت.");
+                });
         }
 
         function toggleNotifications() {
@@ -649,12 +617,12 @@
             const text = document.getElementById('notifyText');
 
             if (notificationsEnabled) {
-                btn.classList.remove('bg-amber-500/20', 'text-amber-600', 'dark:text-amber-400', 'animate-pulse');
-                btn.classList.add('bg-emerald-500/20', 'text-emerald-600', 'dark:text-emerald-400');
+                btn.classList.remove('bg-amber-500/20', 'text-amber-600', 'animate-pulse');
+                btn.classList.add('bg-emerald-500/20', 'text-emerald-600');
                 if (text) text.innerText = "التنبيهات مفعلة";
             } else {
-                btn.classList.remove('bg-emerald-500/20', 'text-emerald-600', 'dark:text-emerald-400');
-                btn.classList.add('bg-amber-500/20', 'text-amber-600', 'dark:text-amber-400', 'animate-pulse');
+                btn.classList.remove('bg-emerald-500/20', 'text-emerald-600');
+                btn.classList.add('bg-amber-500/20', 'text-amber-600', 'animate-pulse');
                 if (text) text.innerText = "التنبيهات";
             }
         }
@@ -666,13 +634,6 @@
                     icon: "https://zahrabomgd-spec.github.io/Dollr1/icon.jpg"
                 });
             }
-        }
-
-        function changeRegion(regionKey) {
-            currentRegion = regionKey;
-            document.getElementById('selectedRegionText').innerText = exchangeData[regionKey].name;
-            updateUI();
-            calculateExchange();
         }
 
         function updateUI() {
@@ -696,11 +657,6 @@
 
             document.getElementById('gold18Price').innerText = data.gold18.sell.toLocaleString('ar-EG');
             document.getElementById('gold24Price').innerText = data.gold24.sell.toLocaleString('ar-EG');
-
-            document.getElementById('damascusComp').innerText = `${exchangeData.damascus.usd.buy.toLocaleString('ar-EG')} / ${exchangeData.damascus.usd.sell.toLocaleString('ar-EG')}`;
-            document.getElementById('aleppoComp').innerText = `${exchangeData.aleppo.usd.buy.toLocaleString('ar-EG')} / ${exchangeData.aleppo.usd.sell.toLocaleString('ar-EG')}`;
-            document.getElementById('idlibComp').innerText = `${exchangeData.idlib.usd.buy.toLocaleString('ar-EG')} / ${exchangeData.idlib.usd.sell.toLocaleString('ar-EG')}`;
-            document.getElementById('hasakahComp').innerText = `${exchangeData.hasakah.usd.buy.toLocaleString('ar-EG')} / ${exchangeData.hasakah.usd.sell.toLocaleString('ar-EG')}`;
         }
 
         function calculateExchange() {
