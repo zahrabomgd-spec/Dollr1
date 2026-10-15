@@ -2,8 +2,8 @@ name: Update Exchange Rates Automatically
 
 on:
   schedule:
-    - cron: '0 * * * *'
-  workflow_dispatch:
+    - cron: '0 * * * *' # يعمل كل ساعة
+  workflow_dispatch: # يسمح بالتشغيل اليدوي
 
 jobs:
   update-rates:
@@ -23,22 +23,35 @@ jobs:
           import requests, json, time
 
           try:
-              # جلب أسعار العملات العالمية المحدثة
-              res = requests.get('https://open.er-api.com/v6/latest/USD', timeout=15)
-              data = res.json()
+              # 1. جلب سعر صرف الدولار مقابل الليرة السورية
+              # ⚠️ مهم: يجب أن تجد API حقيقي يعطي سعر السوق الموازي في سوريا
+              # هذا مجرد مثال، استبدله بـ API حقيقي
+              # مثلاً: sp-today.com/lar.php أو أي مصدر آخر
               
-              # الأسعار المحدثة الحقيقية لسوق دمشق والمحافظات
-              # يتم جلبها وتحديثها برمجياً لتعكس السعر الحقيقي المتداول في السوق
-              usd_sell = 14175
-              usd_buy = 14100
+              # كحل مؤقت، نضع سعراً يدوياً يمكنك تعديله هنا لتغيير السعر
+              # (هذا ليس تحديثاً تلقائياً كاملاً، لكنه أفضل من الثابت الحالي)
+              usd_sell = 14175  # ← عدل هذا الرقم يدوياً عند الحاجة
+              usd_buy = usd_sell - 75
+
+              # 2. جلب سعر الأونصة العالمي بالدولار (مجاني)
+              gold_api = requests.get('https://api.goldprice.dev/v1/prices?symbol=XAU-USD-SPOT', timeout=10)
+              gold_data = gold_api.json()
+              gold_usd = float(gold_data['symbols'][0]['price'])
+              
+              # 3. حساب أسعار الذهب المحلية بالليرة السورية
+              # 1 أونصة = 31.1035 غرام
+              gold_gram_usd = gold_usd / 31.1035
+              gold_21_sell = int(gold_gram_usd * usd_sell * 0.875 * 1.05)
+              gold_18_sell = int(gold_gram_usd * usd_sell * 0.75 * 1.05)
+              gold_24_sell = int(gold_gram_usd * usd_sell * 1.05)
 
               payload = {
                   'lastUpdated': f'تم التحديث آلياً الساعة {time.strftime(\"%H:%M\")}',
                   'exchangeData': {
-                      'damascus': {'name': 'دمشق', 'usd': {'buy': usd_buy, 'sell': usd_sell}, 'eur': {'buy': int(usd_buy*1.1), 'sell': int(usd_sell*1.1)}, 'try': {'buy': 285, 'sell': 290}, 'gold21': {'buy': 16500, 'sell': 16750}, 'gold18': {'buy': 14100, 'sell': 14350}, 'gold24': {'buy': 18800, 'sell': 19100}},
-                      'aleppo': {'name': 'حلب', 'usd': {'buy': usd_buy, 'sell': usd_sell}, 'eur': {'buy': int(usd_buy*1.1), 'sell': int(usd_sell*1.1)}, 'try': {'buy': 285, 'sell': 290}, 'gold21': {'buy': 16500, 'sell': 16750}, 'gold18': {'buy': 14100, 'sell': 14350}, 'gold24': {'buy': 18800, 'sell': 19100}},
-                      'idlib': {'name': 'إدلب', 'usd': {'buy': usd_buy+150, 'sell': usd_sell+200}, 'eur': {'buy': int((usd_buy+150)*1.1), 'sell': int((usd_sell+200)*1.1)}, 'try': {'buy': 291, 'sell': 295}, 'gold21': {'buy': 16750, 'sell': 16950}, 'gold18': {'buy': 14300, 'sell': 14500}, 'gold24': {'buy': 19100, 'sell': 19350}},
-                      'hasakah': {'name': 'الحسكة', 'usd': {'buy': usd_buy+170, 'sell': usd_sell+220}, 'eur': {'buy': int((usd_buy+170)*1.1), 'sell': int((usd_sell+220)*1.1)}, 'try': {'buy': 292, 'sell': 296}, 'gold21': {'buy': 16780, 'sell': 16980}, 'gold18': {'buy': 14320, 'sell': 14520}, 'gold24': {'buy': 19130, 'sell': 19380}}
+                      'damascus': {'name': 'دمشق', 'usd': {'buy': usd_buy, 'sell': usd_sell}, 'eur': {'buy': int(usd_buy*1.08), 'sell': int(usd_sell*1.08)}, 'try': {'buy': 285, 'sell': 290}, 'gold21': {'buy': gold_21_sell - 200, 'sell': gold_21_sell}, 'gold18': {'buy': gold_18_sell - 200, 'sell': gold_18_sell}, 'gold24': {'buy': gold_24_sell - 300, 'sell': gold_24_sell}},
+                      'aleppo': {'name': 'حلب', 'usd': {'buy': usd_buy, 'sell': usd_sell}, 'eur': {'buy': int(usd_buy*1.08), 'sell': int(usd_sell*1.08)}, 'try': {'buy': 285, 'sell': 290}, 'gold21': {'buy': gold_21_sell - 200, 'sell': gold_21_sell}, 'gold18': {'buy': gold_18_sell - 200, 'sell': gold_18_sell}, 'gold24': {'buy': gold_24_sell - 300, 'sell': gold_24_sell}},
+                      'idlib': {'name': 'إدلب', 'usd': {'buy': usd_buy+150, 'sell': usd_sell+200}, 'eur': {'buy': int((usd_buy+150)*1.08), 'sell': int((usd_sell+200)*1.08)}, 'try': {'buy': 291, 'sell': 295}, 'gold21': {'buy': gold_21_sell + 200, 'sell': gold_21_sell + 200}, 'gold18': {'buy': gold_18_sell + 200, 'sell': gold_18_sell + 200}, 'gold24': {'buy': gold_24_sell + 250, 'sell': gold_24_sell + 250}},
+                      'hasakah': {'name': 'الحسكة', 'usd': {'buy': usd_buy+170, 'sell': usd_sell+220}, 'eur': {'buy': int((usd_buy+170)*1.08), 'sell': int((usd_sell+220)*1.08)}, 'try': {'buy': 292, 'sell': 296}, 'gold21': {'buy': gold_21_sell + 230, 'sell': gold_21_sell + 230}, 'gold18': {'buy': gold_18_sell + 230, 'sell': gold_18_sell + 230}, 'gold24': {'buy': gold_24_sell + 280, 'sell': gold_24_sell + 280}}
                   }
               }
 
