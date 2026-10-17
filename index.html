@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سعر الليرة السورية اليوم - العملات والذهب</title>
     <meta name="google-site-verification" content="YTW1x3ACtKfz6bW_b9-O18EGbwlAINdZKASj7iesHTg" />
+    
+    <!-- ✅ سكربت صغير جداً لمنع "وميض" الوضع النهاري إذا كان المستخدم قد اختار الوضع الليلي سابقاً -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -108,6 +116,7 @@
                 </button>
 
                 <button onclick="toggleDarkMode()" title="تغيير المظهر" class="p-2 sm:p-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+                    <!-- يتم تحديث الأيقونة تلقائياً عبر الجافاسكربت بناءً على الوضع -->
                     <i id="themeIcon" class="fa-solid fa-sun text-amber-500 text-sm sm:text-base"></i>
                 </button>
             </div>
@@ -405,8 +414,16 @@
     </footer>
 
     <script>
-        // ✅ كود إخفاء القيم القديمة وإظهار "يتم التحديث..."
+        // ✅ 1. التحقق من الوضع المحفوظ وتحديث الأيقونة عند فتح الصفحة
         document.addEventListener('DOMContentLoaded', function() {
+            const themeIcon = document.getElementById('themeIcon');
+            if (document.documentElement.classList.contains('dark')) {
+                themeIcon.className = 'fa-solid fa-moon text-sm sm:text-base';
+            } else {
+                themeIcon.className = 'fa-solid fa-sun text-amber-500 text-sm sm:text-base';
+            }
+
+            // ✅ كود إخفاء القيم القديمة وإظهار "يتم التحديث..."
             const priceElements = [
                 'usdBuy', 'usdSell', 'usdBriefPrice',
                 'eurBuy', 'eurSell',
@@ -738,16 +755,21 @@
             });
         }
 
+        // ✅ 2. تعديل دالة تبديل الوضع الليلي لحفظ الاختيار في المتصفح
         function toggleDarkMode() {
             const html = document.documentElement;
             const themeIcon = document.getElementById('themeIcon');
+            
             if (html.classList.contains('dark')) {
                 html.classList.remove('dark');
-                themeIcon.className = 'fa-solid fa-sun text-amber-500';
+                themeIcon.className = 'fa-solid fa-sun text-amber-500 text-sm sm:text-base';
+                localStorage.setItem('theme', 'light'); // حفظ الوضع النهاري
             } else {
                 html.classList.add('dark');
-                themeIcon.className = 'fa-solid fa-moon';
+                themeIcon.className = 'fa-solid fa-moon text-sm sm:text-base';
+                localStorage.setItem('theme', 'dark'); // حفظ الوضع الليلي
             }
+            
             if (chartInstance) {
                 chartInstance.destroy();
                 initChart();
