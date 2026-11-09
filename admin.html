@@ -8,8 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
     <style> * { font-family: 'Cairo', sans-serif; } </style>
 </head>
 <body class="bg-slate-950 text-white min-h-screen p-4 sm:p-8 flex items-center justify-center">
@@ -25,7 +27,7 @@
         </div>
         
         <div>
-            <input type="password" id="adminPassword" placeholder="كلمة المرور..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-center font-bold focus:outline-none focus:border-amber-400">
+            <input type="password" id="adminPassword" placeholder="كلمة المرور..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-center font-bold focus:outline-none focus:border-amber-400 text-white">
         </div>
         
         <button onclick="login()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition text-sm">
@@ -68,6 +70,7 @@
             <div class="space-y-3">
                 <label class="block text-xs font-bold text-amber-400">📁 اختر الصور (حتى 4 صور):</label>
                 <input type="file" id="imgFiles" accept="image/*" multiple class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+                <p class="text-[10px] text-slate-400">ملاحظة: إذا لم تحدد صوراً جديدة، سيتم الاحتفاظ بالصور الحالية تلقائياً.</p>
             </div>
 
             <button type="submit" id="saveBtn" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 px-4 rounded-xl transition duration-200 text-sm shadow-lg flex items-center justify-center gap-2 mt-6">
@@ -93,8 +96,8 @@
         const db = firebase.database();
         let currentImages = [];
 
-        // 🔐 كود التحقق من كلمة السر (استبدل النص أدناه بالكود الذي نسخته من موقع التشفير)
-        const SECRET_HASH = "ضع_هنا_كود_التشفير_الذي_نسخته"; 
+        // 🔐 كود التشفير الخاص بك (تم إضافته بناءً على رسالتك السابقة)
+        const SECRET_HASH = "37b102d7856500f3fb87e2d2938dd9b809bf94726e5f27345f276b95ef8d612d"; 
 
         // دالة تشفير النص المُدخل
         async function hashPassword(password) {
@@ -112,7 +115,7 @@
             if (hashedInput === SECRET_HASH) {
                 // حفظ محاولة الدخول في Firebase ليفتح صلاحية الكتابة
                 await db.ref('config/lastAuthAttempt').set(SECRET_HASH);
-                await db.ref('config/adminHash').set(SECRET_HASH); // تأمين المفتاح الأساسي
+                await db.ref('config/adminHash').set(SECRET_HASH); 
                 
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('adminPanel').classList.remove('hidden');
@@ -123,7 +126,7 @@
         }
 
         function logout() {
-            window.location.reload(); // إعادة تحميل الصفحة لقفلها
+            window.location.reload();
         }
 
         // جلب البيانات الحالية
