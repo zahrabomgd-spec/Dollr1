@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم الإعلانات - محمية</title>
+    <title>لوحة التحكم الشاملة - الليرة اليوم</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -12,7 +12,13 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
-    <style> * { font-family: 'Cairo', sans-serif; } </style>
+    <style> 
+        * { font-family: 'Cairo', sans-serif; } 
+        /* تخصيص شكل شريط التمرير */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    </style>
 </head>
 <body class="bg-slate-950 text-white min-h-screen p-4 sm:p-8 flex items-center justify-center">
 
@@ -23,7 +29,7 @@
                 <i class="fa-solid fa-lock"></i>
             </div>
             <h1 class="text-xl font-black">دخول الإدارة</h1>
-            <p class="text-xs text-slate-400">هذه الصفحة محمية، يرجى إدخال كلمة المرور</p>
+            <p class="text-xs text-slate-400">لوحة التحكم محمية، يرجى إدخال كلمة المرور</p>
         </div>
         
         <div>
@@ -37,48 +43,119 @@
     </div>
 
     <!-- ⚙️ لوحة التحكم (مخفية افتراضياً) -->
-    <div id="adminPanel" class="hidden max-w-2xl w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-6">
+    <div id="adminPanel" class="hidden max-w-4xl w-full bg-slate-900 border border-slate-800 rounded-3xl p-4 sm:p-6 shadow-2xl space-y-6">
         
+        <!-- الترويسة -->
         <div class="flex justify-between items-center border-b border-slate-800 pb-4">
             <div>
-                <h1 class="text-xl font-black text-amber-400">⚙️ لوحة التحكم</h1>
-                <p class="text-[10px] text-slate-400">تعديلاتك محمية ومشفرة</p>
+                <h1 class="text-xl font-black text-amber-400">⚙️ لوحة الإدارة الشاملة</h1>
+                <p class="text-[10px] text-slate-400">تطبيق الليرة اليوم</p>
             </div>
             <button onclick="logout()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-slate-300 transition">
                 <i class="fa-solid fa-right-from-bracket"></i> خروج
             </button>
         </div>
 
-        <form id="adForm" class="space-y-4">
-            <div>
-                <label class="block text-xs font-bold text-slate-300 mb-1">عنوان الإعلان</label>
-                <input type="text" id="adTitle" required class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold text-amber-300 focus:outline-none focus:border-amber-400">
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold text-slate-300 mb-1">الوصف</label>
-                <textarea id="adDesc" rows="3" required class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-amber-400"></textarea>
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold text-slate-300 mb-1">رقم الواتساب</label>
-                <input type="text" id="adPhone" required class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold text-emerald-400 focus:outline-none focus:border-emerald-500">
-            </div>
-
-            <hr class="border-slate-800 my-4">
-
-            <div class="space-y-3">
-                <label class="block text-xs font-bold text-amber-400">📁 اختر الصور (حتى 4 صور):</label>
-                <input type="file" id="imgFiles" accept="image/*" multiple class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
-                <p class="text-[10px] text-slate-400">ملاحظة: إذا لم تحدد صوراً جديدة، سيتم الاحتفاظ بالصور الحالية تلقائياً.</p>
-            </div>
-
-            <button type="submit" id="saveBtn" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 px-4 rounded-xl transition duration-200 text-sm shadow-lg flex items-center justify-center gap-2 mt-6">
-                <i class="fa-solid fa-cloud-arrow-up"></i> حفظ ونشر التعديلات
+        <!-- أزرار التبويب (Tabs) -->
+        <div class="flex gap-2 border-b border-slate-800 pb-2">
+            <button onclick="switchTab('ads')" id="tabBtnAds" class="px-4 py-2 text-sm font-bold rounded-t-lg bg-slate-800 text-amber-400 border-b-2 border-amber-400 transition">
+                <i class="fa-solid fa-bullhorn ml-1"></i> الإعلان
             </button>
-        </form>
+            <button onclick="switchTab('subs')" id="tabBtnSubs" class="px-4 py-2 text-sm font-bold rounded-t-lg text-slate-400 hover:text-white transition">
+                <i class="fa-solid fa-users ml-1"></i> المشتركين والزوار
+            </button>
+        </div>
 
-        <div id="statusMsg" class="hidden text-center text-xs font-bold p-3 rounded-xl"></div>
+        <!-- 🟢 التبويب الأول: الإعلان -->
+        <div id="tabAds" class="space-y-4">
+            <form id="adForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">عنوان الإعلان</label>
+                    <input type="text" id="adTitle" required class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold text-amber-300 focus:outline-none focus:border-amber-400">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">الوصف</label>
+                    <textarea id="adDesc" rows="3" required class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-amber-400"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1">رقم الواتساب</label>
+                    <input type="text" id="adPhone" required class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold text-emerald-400 focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <hr class="border-slate-800 my-4">
+
+                <div class="space-y-3">
+                    <label class="block text-xs font-bold text-amber-400">📁 اختر الصور (حتى 4 صور):</label>
+                    <input type="file" id="imgFiles" accept="image/*" multiple class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+                    <p class="text-[10px] text-slate-400">ملاحظة: إذا لم تحدد صوراً جديدة، سيتم الاحتفاظ بالصور الحالية تلقائياً.</p>
+                </div>
+
+                <button type="submit" id="saveBtn" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 px-4 rounded-xl transition duration-200 text-sm shadow-lg flex items-center justify-center gap-2 mt-6">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> حفظ ونشر التعديلات
+                </button>
+            </form>
+            <div id="statusMsg" class="hidden text-center text-xs font-bold p-3 rounded-xl"></div>
+        </div>
+
+        <!-- 🟢 التبويب الثاني: المشتركين والزوار -->
+        <div id="tabSubs" class="hidden space-y-6">
+            
+            <!-- الإحصائيات -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400">إجمالي الزوار</p>
+                        <p class="text-xl font-black text-white" id="statVisitors">...</p>
+                    </div>
+                </div>
+                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400">إجمالي المشتركين</p>
+                        <p class="text-xl font-black text-white" id="statSubscribers">...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- أدوات الجدول -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 bg-slate-800/30 p-3 rounded-xl border border-slate-800">
+                <h3 class="font-bold text-sm text-slate-200">📋 سجل المشتركين</h3>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button onclick="exportToExcel()" class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-file-excel"></i> تصدير Excel
+                    </button>
+                    <button onclick="deleteAllSubscribers()" class="flex-1 sm:flex-none bg-rose-600/20 hover:bg-rose-600/40 text-rose-400 text-xs font-bold px-4 py-2 rounded-lg transition flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-trash"></i> مسح الكل
+                    </button>
+                </div>
+            </div>
+
+            <!-- جدول المشتركين -->
+            <div class="overflow-x-auto rounded-xl border border-slate-800 max-h-80 overflow-y-auto">
+                <table class="w-full text-right text-xs">
+                    <thead class="bg-slate-800 text-slate-300 sticky top-0">
+                        <tr>
+                            <th class="p-3 font-bold">#</th>
+                            <th class="p-3 font-bold">اسم المشترك</th>
+                            <th class="p-3 font-bold">تاريخ الاشتراك</th>
+                            <th class="p-3 font-bold text-center">إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subscribersTable" class="divide-y divide-slate-800/50">
+                        <!-- سيتم تعبئة البيانات هنا -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
     </div>
 
     <script>
@@ -95,11 +172,11 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         let currentImages = [];
+        let subscribersData = []; // لحفظ البيانات للتصدير
 
-        // 🔐 كود التشفير الخاص بك (تم إضافته بناءً على رسالتك السابقة)
+        // 🔐 كود التشفير الخاص بك
         const SECRET_HASH = "37b102d7856500f3fb87e2d2938dd9b809bf94726e5f27345f276b95ef8d612d"; 
 
-        // دالة تشفير النص المُدخل
         async function hashPassword(password) {
             const msgBuffer = new TextEncoder().encode(password);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -107,29 +184,48 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        // دالة تسجيل الدخول
         async function login() {
             const pass = document.getElementById('adminPassword').value;
             const hashedInput = await hashPassword(pass);
 
             if (hashedInput === SECRET_HASH) {
-                // حفظ محاولة الدخول في Firebase ليفتح صلاحية الكتابة
                 await db.ref('config/lastAuthAttempt').set(SECRET_HASH);
                 await db.ref('config/adminHash').set(SECRET_HASH); 
                 
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('adminPanel').classList.remove('hidden');
+                
                 loadAdData();
+                loadSubscribersData();
+                loadVisitorsData();
             } else {
                 document.getElementById('loginError').classList.remove('hidden');
             }
         }
 
-        function logout() {
-            window.location.reload();
+        function logout() { window.location.reload(); }
+
+        // نظام التبويبات (Tabs)
+        function switchTab(tab) {
+            const btnAds = document.getElementById('tabBtnAds');
+            const btnSubs = document.getElementById('tabBtnSubs');
+            const tabAds = document.getElementById('tabAds');
+            const tabSubs = document.getElementById('tabSubs');
+
+            if(tab === 'ads') {
+                btnAds.className = 'px-4 py-2 text-sm font-bold rounded-t-lg bg-slate-800 text-amber-400 border-b-2 border-amber-400 transition';
+                btnSubs.className = 'px-4 py-2 text-sm font-bold rounded-t-lg text-slate-400 hover:text-white transition';
+                tabAds.classList.remove('hidden');
+                tabSubs.classList.add('hidden');
+            } else {
+                btnSubs.className = 'px-4 py-2 text-sm font-bold rounded-t-lg bg-slate-800 text-amber-400 border-b-2 border-amber-400 transition';
+                btnAds.className = 'px-4 py-2 text-sm font-bold rounded-t-lg text-slate-400 hover:text-white transition';
+                tabSubs.classList.remove('hidden');
+                tabAds.classList.add('hidden');
+            }
         }
 
-        // جلب البيانات الحالية
+        // --- إدارة الإعلانات ---
         function loadAdData() {
             db.ref('advertisement').once('value', (snapshot) => {
                 const data = snapshot.val();
@@ -171,7 +267,6 @@
                     imageBase64List = currentImages;
                 }
 
-                // إعادة تأكيد الصلاحية قبل الحفظ
                 await db.ref('config/lastAuthAttempt').set(SECRET_HASH);
 
                 const adData = {
@@ -198,7 +293,121 @@
             status.className = `text-center text-xs font-bold p-3 rounded-xl ${classes}`;
             status.innerText = msg;
             status.classList.remove('hidden');
+            setTimeout(() => status.classList.add('hidden'), 4000);
         }
+
+        // --- إدارة المشتركين والزوار ---
+        
+        // 1. جلب عدّاد الزوار
+        function loadVisitorsData() {
+            db.ref('stats/totalVisitors').on('value', (snap) => {
+                const count = snap.val() || 0;
+                document.getElementById('statVisitors').innerText = count.toLocaleString('ar-EG');
+            });
+        }
+
+        // 2. جلب المشتركين وعرضهم في الجدول
+        function loadSubscribersData() {
+            db.ref('subscribers').on('value', (snap) => {
+                const data = snap.val();
+                subscribersData = [];
+                const tableBody = document.getElementById('subscribersTable');
+                tableBody.innerHTML = '';
+
+                if (data) {
+                    // تحويل الكائن إلى مصفوفة وترتيبه تنازلياً حسب الوقت
+                    Object.keys(data).forEach(key => {
+                        subscribersData.push({ id: key, ...data[key] });
+                    });
+                    subscribersData.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                    document.getElementById('statSubscribers').innerText = subscribersData.length.toLocaleString('ar-EG');
+
+                    subscribersData.forEach((sub, index) => {
+                        let dateStr = 'غير محدد';
+                        if (sub.timestamp) {
+                            const date = new Date(sub.timestamp);
+                            dateStr = date.toLocaleDateString('ar-EG') + ' - ' + date.toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
+                        }
+
+                        const tr = document.createElement('tr');
+                        tr.className = 'hover:bg-slate-800/30 transition';
+                        tr.innerHTML = `
+                            <td class="p-3 text-slate-400">${index + 1}</td>
+                            <td class="p-3 font-bold text-amber-300">${sub.name || 'مجهول'}</td>
+                            <td class="p-3 text-slate-400 text-[10px]" dir="ltr">${dateStr}</td>
+                            <td class="p-3 text-center">
+                                <button onclick="deleteSubscriber('${sub.id}')" class="text-rose-500 hover:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 p-1.5 rounded-md transition" title="حذف">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                </button>
+                            </td>
+                        `;
+                        tableBody.appendChild(tr);
+                    });
+                } else {
+                    document.getElementById('statSubscribers').innerText = '0';
+                    tableBody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500">لا يوجد مشتركين حتى الآن</td></tr>';
+                }
+            });
+        }
+
+        // 3. حذف مشترك واحد
+        async function deleteSubscriber(id) {
+            if(confirm('هل أنت متأكد من حذف هذا المشترك؟')) {
+                try {
+                    await db.ref('config/lastAuthAttempt').set(SECRET_HASH); // تأكيد الصلاحية
+                    await db.ref('subscribers/' + id).remove();
+                } catch (error) {
+                    alert('حدث خطأ أثناء الحذف: ' + error.message);
+                }
+            }
+        }
+
+        // 4. حذف كل المشتركين
+        async function deleteAllSubscribers() {
+            if(confirm('⚠️ تحذير: هل أنت متأكد من مسح جميع المشتركين نهائياً؟ لا يمكن التراجع عن هذه الخطوة!')) {
+                try {
+                    await db.ref('config/lastAuthAttempt').set(SECRET_HASH);
+                    await db.ref('subscribers').remove();
+                } catch (error) {
+                    alert('حدث خطأ أثناء المسح: ' + error.message);
+                }
+            }
+        }
+
+        // 5. تصدير إلى Excel (CSV)
+        function exportToExcel() {
+            if (subscribersData.length === 0) {
+                alert('لا يوجد بيانات لتصديرها.');
+                return;
+            }
+
+            // إضافة BOM لدعم اللغة العربية في Excel
+            let csvContent = "\uFEFF"; 
+            csvContent += "الرقم,الاسم,تاريخ الاشتراك,معرف الجهاز\n";
+
+            subscribersData.forEach((sub, index) => {
+                let dateStr = '';
+                if (sub.timestamp) {
+                    dateStr = new Date(sub.timestamp).toLocaleString('ar-EG');
+                }
+                // تنظيف النصوص من الفواصل
+                const name = (sub.name || '').replace(/,/g, ' ');
+                const ua = (sub.userAgent || '').replace(/,/g, ' ');
+                
+                csvContent += `${index + 1},${name},${dateStr},${ua}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `مشتركين_الليرة_اليوم_${new Date().toLocaleDateString('ar-EG')}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
     </script>
 </body>
 </html>
