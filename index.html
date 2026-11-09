@@ -6,7 +6,7 @@
     <title>سعر الليرة السورية اليوم - العملات والذهب</title>
     <meta name="google-site-verification" content="YTW1x3ACtKfz6bW_b9-O18EGbwlAINdZKASj7iesHTg" />
     
-    <!-- ✅ سكربت صغير جداً لمنع "وميض" الوضع النهاري إذا كان المستخدم قد اختار الوضع الليلي سابقاً -->
+    <!-- ✅ منع وميض الوضع الليلي -->
     <script>
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.classList.add('dark');
@@ -36,13 +36,10 @@
             }
         }
     </script>
-    <!-- Google Fonts: Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Chart.js for Interactive Price Charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Firebase SDKs -->
@@ -50,28 +47,17 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <style>
-        * {
-            font-family: 'Cairo', sans-serif;
-        }
-        .glow-gold {
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
-        }
-        .glow-green {
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
-        }
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #475569;
-            border-radius: 4px;
-        }
-        .dark ::-webkit-scrollbar-thumb {
-            background: #334155;
+        * { font-family: 'Cairo', sans-serif; }
+        .glow-gold { box-shadow: 0 0 15px rgba(212, 175, 55, 0.25); }
+        .glow-green { box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
     </style>
     <link rel="icon" type="image/jpeg" href="https://zahrabomgd-spec.github.io/Dollr1/icon.jpg">
@@ -80,7 +66,7 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
 
-    <!-- Notice Banner for Notifications -->
+    <!-- Notice Banner -->
     <div id="notificationBanner" class="bg-amber-500 text-slate-950 font-bold px-4 py-2 text-xs sm:text-sm flex items-center justify-between shadow-md relative z-50">
         <div class="flex items-center gap-2 max-w-7xl mx-auto w-full justify-between">
             <span class="flex items-center gap-2">
@@ -116,7 +102,6 @@
                 </button>
 
                 <button onclick="toggleDarkMode()" title="تغيير المظهر" class="p-2 sm:p-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition">
-                    <!-- يتم تحديث الأيقونة تلقائياً عبر الجافاسكربت بناءً على الوضع -->
                     <i id="themeIcon" class="fa-solid fa-sun text-amber-500 text-sm sm:text-base"></i>
                 </button>
             </div>
@@ -125,7 +110,7 @@
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
-        <!-- 📢 معرض صور دوّار لإعلان مفروشات المجد (أول عنصر) -->
+        <!-- 📢 معرض صور الإعلان -->
         <div class="w-full bg-slate-900 text-white rounded-2xl border border-slate-800 shadow-lg overflow-hidden relative group max-w-3xl mx-auto">
             <span class="absolute top-2 left-3 text-[9px] font-bold text-amber-300 bg-black/60 px-2 py-0.5 rounded-full backdrop-blur-md z-20 border border-amber-400/20">إعلان</span>
             
@@ -170,7 +155,6 @@
 
         <!-- Currencies Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- USD -->
             <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition relative overflow-hidden group">
                 <div class="flex justify-between items-start mb-3">
                     <div class="flex items-center gap-2.5">
@@ -195,7 +179,6 @@
                 </div>
             </div>
 
-            <!-- EUR -->
             <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition relative overflow-hidden group">
                 <div class="flex justify-between items-start mb-3">
                     <div class="flex items-center gap-2.5">
@@ -220,7 +203,6 @@
                 </div>
             </div>
 
-            <!-- TRY -->
             <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition relative overflow-hidden group">
                 <div class="flex justify-between items-start mb-3">
                     <div class="flex items-center gap-2.5">
@@ -245,7 +227,6 @@
                 </div>
             </div>
 
-            <!-- Gold 21K -->
             <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-amber-500/30 dark:border-amber-500/20 shadow-sm hover:shadow-md transition relative overflow-hidden group glow-gold">
                 <div class="flex justify-between items-start mb-3">
                     <div class="flex items-center gap-2.5">
@@ -405,16 +386,72 @@
     </main>
 
     <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 transition-colors">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
-            <div class="flex items-center gap-2">
-                <span class="font-bold text-slate-700 dark:text-slate-300">تطبيق الليرة اليوم</span>
-                <span>&copy; 2026 - جميع الأسعار مستقاة مباشرة من حركة السوق الموازي في سوريا.</span>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-4">
+            
+            <!-- ✅ عدّاد الزوار والمشتركين -->
+            <div class="flex items-center justify-center gap-3 flex-wrap text-xs">
+                <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2">
+                    <i class="fa-solid fa-eye text-emerald-500"></i>
+                    <span class="text-slate-500 dark:text-slate-400">الزوار:</span>
+                    <span id="visitorCount" class="font-black text-slate-900 dark:text-white">—</span>
+                </div>
+                <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2">
+                    <i class="fa-solid fa-user-check text-amber-500"></i>
+                    <span class="text-slate-500 dark:text-slate-400">المشتركون:</span>
+                    <span id="subscriberCount" class="font-black text-slate-900 dark:text-white">—</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+                <div class="flex items-center gap-2">
+                    <span class="font-bold text-slate-700 dark:text-slate-300">تطبيق الليرة اليوم</span>
+                    <span>&copy; 2026 - جميع الأسعار مستقاة مباشرة من حركة السوق الموازي في سوريا.</span>
+                </div>
             </div>
         </div>
     </footer>
 
+    <!-- ===== نافذة الاشتراك المجاني ===== -->
+    <div id="subscribePopup" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-7 max-w-md w-full text-center relative shadow-2xl border border-slate-200 dark:border-slate-800" style="animation: fadeInUp 0.4s ease;">
+            
+            <button onclick="closeSubscribePopup()" class="absolute top-3 left-3 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+
+            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white text-3xl shadow-lg shadow-emerald-500/30">
+                <i class="fa-solid fa-gift"></i>
+            </div>
+
+            <h2 class="text-2xl font-black text-slate-900 dark:text-white mb-2">الاشتراك مجاني 🎉</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-5 leading-relaxed">
+                أدخل اسمك للانضمام إلينا ومتابعة أسعار الدولار والذهب أولاً بأول
+            </p>
+
+            <form onsubmit="return submitSubscribe(event)">
+                <input 
+                    type="text" 
+                    id="subscriberName" 
+                    placeholder="اكتب اسمك هنا..." 
+                    required 
+                    minlength="2"
+                    autocomplete="name"
+                    class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-semibold focus:outline-none focus:border-emerald-500 transition text-right"
+                />
+                <button type="submit" id="subscribeSubmitBtn" class="w-full mt-3 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-black text-sm shadow-lg shadow-emerald-500/30 transition transform hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none">
+                    <i class="fa-solid fa-check-circle ml-2"></i>
+                    اشترك الآن مجاناً
+                </button>
+            </form>
+
+            <p onclick="closeSubscribePopup()" class="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer mt-4 underline">
+                ربما لاحقاً
+            </p>
+        </div>
+    </div>
+
     <script>
-        // ✅ 1. التحقق من الوضع المحفوظ وتحديث الأيقونة عند فتح الصفحة
+        // ✅ تحديث أيقونة الوضع الليلي
         document.addEventListener('DOMContentLoaded', function() {
             const themeIcon = document.getElementById('themeIcon');
             if (document.documentElement.classList.contains('dark')) {
@@ -423,7 +460,6 @@
                 themeIcon.className = 'fa-solid fa-sun text-amber-500 text-sm sm:text-base';
             }
 
-            // ✅ كود إخفاء القيم القديمة وإظهار "يتم التحديث..."
             const priceElements = [
                 'usdBuy', 'usdSell', 'usdBriefPrice',
                 'eurBuy', 'eurSell',
@@ -434,15 +470,11 @@
             
             priceElements.forEach(id => {
                 const el = document.getElementById(id);
-                if (el) {
-                    el.innerText = '...';
-                }
+                if (el) el.innerText = '...';
             });
             
             const timeEl = document.getElementById('lastUpdatedTime');
-            if (timeEl) {
-                timeEl.innerText = 'جاري التحديث...';
-            }
+            if (timeEl) timeEl.innerText = 'جاري التحديث...';
         });
 
         const firebaseConfig = {
@@ -468,13 +500,11 @@
         let notificationsEnabled = false;
         let currentSlide = 0;
 
-        // 🟢 الاستماع الفوري للأسعار المباشرة من Firebase
+        // 🟢 الاستماع للأسعار
         db.ref('rates').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                if (data.exchangeData) {
-                    exchangeData = data.exchangeData;
-                }
+                if (data.exchangeData) exchangeData = data.exchangeData;
                 const newSell = exchangeData.damascus.usd.sell;
                 if (lastUSDPrice !== 0 && lastUSDPrice !== newSell && notificationsEnabled) {
                     sendPriceNotification(newSell);
@@ -493,7 +523,7 @@
             }
         });
 
-        // 📢 الاستماع للإعلانات من Firebase
+        // 📢 الاستماع للإعلانات
         db.ref('advertisement').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -569,9 +599,7 @@
                 .then((snapshot) => {
                     const data = snapshot.val();
                     if (data) {
-                        if (data.exchangeData) {
-                            exchangeData = data.exchangeData;
-                        }
+                        if (data.exchangeData) exchangeData = data.exchangeData;
                         updateUI();
                         calculateExchange();
                         if (data.lastUpdated) {
@@ -755,7 +783,6 @@
             });
         }
 
-        // ✅ 2. تعديل دالة تبديل الوضع الليلي لحفظ الاختيار في المتصفح
         function toggleDarkMode() {
             const html = document.documentElement;
             const themeIcon = document.getElementById('themeIcon');
@@ -763,17 +790,120 @@
             if (html.classList.contains('dark')) {
                 html.classList.remove('dark');
                 themeIcon.className = 'fa-solid fa-sun text-amber-500 text-sm sm:text-base';
-                localStorage.setItem('theme', 'light'); // حفظ الوضع النهاري
+                localStorage.setItem('theme', 'light');
             } else {
                 html.classList.add('dark');
                 themeIcon.className = 'fa-solid fa-moon text-sm sm:text-base';
-                localStorage.setItem('theme', 'dark'); // حفظ الوضع الليلي
+                localStorage.setItem('theme', 'dark');
             }
             
             if (chartInstance) {
                 chartInstance.destroy();
                 initChart();
             }
+        }
+
+        /* ============================================
+           🎯 نظام الاشتراك المجاني + عدّاد الزوار
+           ============================================ */
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const popup = document.getElementById('subscribePopup');
+            const alreadySubscribed = localStorage.getItem('subscriber_name');
+
+            if (!alreadySubscribed) {
+                setTimeout(() => {
+                    popup.classList.remove('hidden');
+                    popup.classList.add('flex');
+                }, 2000);
+            }
+
+            registerVisitor();
+
+            db.ref('subscribers').on('value', (snap) => {
+                const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+                const el = document.getElementById('subscriberCount');
+                if (el) el.innerText = count.toLocaleString('ar-EG');
+            });
+        });
+
+        function closeSubscribePopup() {
+            const popup = document.getElementById('subscribePopup');
+            popup.classList.add('hidden');
+            popup.classList.remove('flex');
+            localStorage.setItem('subscribe_popup_seen', 'yes');
+        }
+
+        function submitSubscribe(event) {
+            event.preventDefault();
+
+            const nameInput = document.getElementById('subscriberName');
+            const name = nameInput.value.trim();
+
+            if (name.length < 2) {
+                alert('الرجاء إدخال اسم صحيح (حرفين على الأقل)');
+                return false;
+            }
+
+            const btn = document.getElementById('subscribeSubmitBtn');
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin ml-2"></i> جارٍ الإرسال...';
+
+            const subscriberRef = db.ref('subscribers').push();
+            subscriberRef.set({
+                name: name,
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                userAgent: navigator.userAgent.substring(0, 100)
+            })
+            .then(() => {
+                localStorage.setItem('subscriber_name', name);
+                showThankYou(name);
+            })
+            .catch((err) => {
+                console.error('خطأ في الحفظ:', err);
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+                alert('تعذر إتمام الاشتراك، حاول مرة أخرى');
+            });
+
+            return false;
+        }
+
+        function showThankYou(name) {
+            const box = document.querySelector('#subscribePopup > div');
+            box.innerHTML = `
+                <div class="py-4">
+                    <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-4xl">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <h2 class="text-2xl font-black text-emerald-600 dark:text-emerald-400 mb-2">شكراً لك يا ${name}!</h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-5 leading-relaxed">
+                        تم تسجيل اشتراكك بنجاح ✅<br>ستصلك آخر أسعار الدولار أولاً بأول.
+                    </p>
+                    <button onclick="closeSubscribePopup()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-black text-sm shadow-lg">
+                        حسناً، شكراً
+                    </button>
+                </div>
+            `;
+            localStorage.setItem('subscribe_popup_seen', 'yes');
+            setTimeout(closeSubscribePopup, 4000);
+        }
+
+        function registerVisitor() {
+            const sessionKey = 'visitor_counted_session';
+
+            if (!sessionStorage.getItem(sessionKey)) {
+                const visitorRef = db.ref('stats/totalVisitors');
+                visitorRef.transaction((current) => (current || 0) + 1);
+                sessionStorage.setItem(sessionKey, 'yes');
+            }
+
+            db.ref('stats/totalVisitors').on('value', (snap) => {
+                const count = snap.val() || 0;
+                const el = document.getElementById('visitorCount');
+                if (el) el.innerText = count.toLocaleString('ar-EG');
+            });
         }
     </script>
     <script>
