@@ -3,53 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم الإعلانات - مفروشات المجد</title>
+    <title>لوحة تحكم الإعلانات - محمية</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
     <style> * { font-family: 'Cairo', sans-serif; } </style>
 </head>
-<body class="bg-slate-950 text-white min-h-screen p-4 sm:p-8">
+<body class="bg-slate-950 text-white min-h-screen p-4 sm:p-8 flex items-center justify-center">
 
-    <div class="max-w-2xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-6">
+    <!-- 🔒 شاشة تسجيل الدخول -->
+    <div id="loginScreen" class="max-w-sm w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4">
+        <div class="text-center space-y-2">
+            <div class="w-16 h-16 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center mx-auto text-2xl">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h1 class="text-xl font-black">دخول الإدارة</h1>
+            <p class="text-xs text-slate-400">هذه الصفحة محمية، يرجى إدخال كلمة المرور</p>
+        </div>
         
-        <div class="text-center space-y-2 border-b border-slate-800 pb-4">
-            <h1 class="text-2xl font-black text-amber-400">⚙️ لوحة تحكم الإعلانات</h1>
-            <p class="text-xs text-slate-400">رفع الصور وتعديل الإعلان في تطبيق "الليرة اليوم" بضغطة زر</p>
+        <div>
+            <input type="password" id="adminPassword" placeholder="كلمة المرور..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-center font-bold focus:outline-none focus:border-amber-400">
+        </div>
+        
+        <button onclick="login()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl transition text-sm">
+            تسجيل الدخول
+        </button>
+        <p id="loginError" class="text-rose-500 text-xs text-center font-bold hidden">كلمة المرور غير صحيحة!</p>
+    </div>
+
+    <!-- ⚙️ لوحة التحكم (مخفية افتراضياً) -->
+    <div id="adminPanel" class="hidden max-w-2xl w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-6">
+        
+        <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+            <div>
+                <h1 class="text-xl font-black text-amber-400">⚙️ لوحة التحكم</h1>
+                <p class="text-[10px] text-slate-400">تعديلاتك محمية ومشفرة</p>
+            </div>
+            <button onclick="logout()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-slate-300 transition">
+                <i class="fa-solid fa-right-from-bracket"></i> خروج
+            </button>
         </div>
 
         <form id="adForm" class="space-y-4">
             <div>
-                <label class="block text-xs font-bold text-slate-300 mb-1">عنوان الإعلان الرئيسي</label>
+                <label class="block text-xs font-bold text-slate-300 mb-1">عنوان الإعلان</label>
                 <input type="text" id="adTitle" required class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold text-amber-300 focus:outline-none focus:border-amber-400">
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-slate-300 mb-1">وصف الإعلان / التفاصيل</label>
+                <label class="block text-xs font-bold text-slate-300 mb-1">الوصف</label>
                 <textarea id="adDesc" rows="3" required class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-amber-400"></textarea>
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-slate-300 mb-1">رقم الواتساب للتواصل (بدون علامة +)</label>
-                <input type="text" id="adPhone" placeholder="9639xxxxxxxx" required class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold text-emerald-400 focus:outline-none focus:border-emerald-500">
+                <label class="block text-xs font-bold text-slate-300 mb-1">رقم الواتساب</label>
+                <input type="text" id="adPhone" required class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm font-bold text-emerald-400 focus:outline-none focus:border-emerald-500">
             </div>
 
             <hr class="border-slate-800 my-4">
 
             <div class="space-y-3">
-                <label class="block text-xs font-bold text-amber-400">📁 اختر الصور من جهازك مباشرة (حتى 4 صور):</label>
+                <label class="block text-xs font-bold text-amber-400">📁 اختر الصور (حتى 4 صور):</label>
                 <input type="file" id="imgFiles" accept="image/*" multiple class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
-                <p class="text-[10px] text-slate-400">ملاحظة: إذا لم تحدد صوراً جديدة، سيتم الاحتفاظ بالصور الحالية تلقائياً.</p>
             </div>
 
             <button type="submit" id="saveBtn" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3.5 px-4 rounded-xl transition duration-200 text-sm shadow-lg flex items-center justify-center gap-2 mt-6">
-                <i class="fa-solid fa-cloud-arrow-up"></i>
-                حفظ ونشر التعديلات فوراً
+                <i class="fa-solid fa-cloud-arrow-up"></i> حفظ ونشر التعديلات
             </button>
         </form>
 
@@ -71,20 +93,52 @@
         const db = firebase.database();
         let currentImages = [];
 
-        // جلب البيانات الحالية
-        db.ref('advertisement').once('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                document.getElementById('adTitle').value = data.title || '';
-                document.getElementById('adDesc').value = data.desc || '';
-                document.getElementById('adPhone').value = data.phone || '';
-                if(data.images) {
-                    currentImages = data.images;
-                }
-            }
-        });
+        // 🔐 كود التحقق من كلمة السر (استبدل النص أدناه بالكود الذي نسخته من موقع التشفير)
+        const SECRET_HASH = "ضع_هنا_كود_التشفير_الذي_نسخته"; 
 
-        // دالة تحويل الصورة المرفوعة إلى Base64
+        // دالة تشفير النص المُدخل
+        async function hashPassword(password) {
+            const msgBuffer = new TextEncoder().encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // دالة تسجيل الدخول
+        async function login() {
+            const pass = document.getElementById('adminPassword').value;
+            const hashedInput = await hashPassword(pass);
+
+            if (hashedInput === SECRET_HASH) {
+                // حفظ محاولة الدخول في Firebase ليفتح صلاحية الكتابة
+                await db.ref('config/lastAuthAttempt').set(SECRET_HASH);
+                await db.ref('config/adminHash').set(SECRET_HASH); // تأمين المفتاح الأساسي
+                
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                loadAdData();
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        function logout() {
+            window.location.reload(); // إعادة تحميل الصفحة لقفلها
+        }
+
+        // جلب البيانات الحالية
+        function loadAdData() {
+            db.ref('advertisement').once('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById('adTitle').value = data.title || '';
+                    document.getElementById('adDesc').value = data.desc || '';
+                    document.getElementById('adPhone').value = data.phone || '';
+                    if(data.images) currentImages = data.images;
+                }
+            });
+        }
+
         function convertImageToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -94,19 +148,18 @@
             });
         }
 
-        // حفظ التعديلات
         document.getElementById('adForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('saveBtn');
             btn.disabled = true;
-            btn.innerText = "جاري معالجة وحفظ الصور...";
+            btn.innerText = "جاري الحفظ...";
 
             const fileInput = document.getElementById('imgFiles');
             let imageBase64List = [];
 
             try {
                 if (fileInput.files.length > 0) {
-                    showStatus('جاري معالجة الصور المحددة...', 'bg-blue-500/20 text-blue-400');
+                    showStatus('جاري معالجة الصور...', 'bg-blue-500/20 text-blue-400');
                     for (let i = 0; i < Math.min(fileInput.files.length, 4); i++) {
                         const base64Str = await convertImageToBase64(fileInput.files[i]);
                         imageBase64List.push(base64Str);
@@ -114,6 +167,9 @@
                 } else {
                     imageBase64List = currentImages;
                 }
+
+                // إعادة تأكيد الصلاحية قبل الحفظ
+                await db.ref('config/lastAuthAttempt').set(SECRET_HASH);
 
                 const adData = {
                     title: document.getElementById('adTitle').value,
@@ -125,12 +181,12 @@
 
                 await db.ref('advertisement').set(adData);
                 currentImages = imageBase64List;
-                showStatus('تم حفظ ونشر التعديلات بنجاح في التطبيق!', 'bg-emerald-500/20 text-emerald-400');
+                showStatus('تم حفظ ونشر التعديلات بنجاح! ✅', 'bg-emerald-500/20 text-emerald-400');
             } catch (err) {
-                showStatus('حدث خطأ أثناء الحفظ: ' + err.message, 'bg-rose-500/20 text-rose-400');
+                showStatus('حدث خطأ: ' + err.message, 'bg-rose-500/20 text-rose-400');
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> حفظ ونشر التعديلات فوراً';
+                btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> حفظ ونشر التعديلات';
             }
         });
 
